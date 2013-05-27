@@ -7,7 +7,7 @@ Motivation
 API
 ---
 
-###API Caveats
+##API Caveats
 
 Object Extension / Interface Implementation
 ----------------------------------------
