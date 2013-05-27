@@ -75,6 +75,52 @@ include 'undefined', 'object', 'boolean', 'number', 'string', or 'function'.
 portion.
 
 ###consume(other, mutator, global)
+Consumes all the properties in 'other' that are already exist in 'this'. Allows you to set default values in your code and have them
+overridden by an init Object without having to explicitely check for their existence. 
+```javascript
+  var blade = {
+    name : 'blade',
+    attack : function(){
+      console.log("Oh you're human?...nevermind you are free to go");
+    }
+  }
+  
+  var Monster = function(){};
+  
+  Monster.prototype.attack = function(){
+    console.log('grrrrrr');
+  }
+  
+  var Vampire = function(){
+    this.super();
+    this.name = 'dracula';
+    this.preferredMeal = 'blood';
+    //this.consume(); this is the ideal place to use consume()
+  }.extends(Monster);
+  
+  var a = new Vampire();
+  a.consume(blade); //a.name == 'blade' , a.attack() still prints 'grrrrrr'
+  
+  var b = new Vampire();
+  b.consume(blade, true); //a.name == 'blade' , a.attack() now prints "Oh you're human?...nevermind you are free to go"
+  
+  var c = new Vampire();
+  c.consume(blade, function(prop){
+    if(typeof this[prop] == 'function'){
+      return function(){ 
+        console.log('Mwuahaha I overwrote your function');
+        this[prop]();
+    }
+    return 'The Vampire ' + this[prop];
+  }, true); //a.name == 'The Vampire blade' , a.attack() now prints 'Mwuahaha I overwrote your function' and then 
+            //"Oh you're human?...nevermind you are free to go" 
+  
+```
+*Parameters :
+  *other :
+  *mutator :
+  *global :
+*Caveats :
 
 ###projectOnto(other, options)
 
