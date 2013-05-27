@@ -34,7 +34,7 @@ If funcName is present, then the the Superclasses function given by funcName is 
     //do stuff...
   }
 ```
-*params
+* params
 ** funcName : the String name of the Superclasse's function to be called
 ** argArray : the arguments to pass to either the Superclass constructor or one of its functions
 * Caveats : funcName must be a function on the prototype of the Superclass
