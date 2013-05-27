@@ -6,6 +6,9 @@ Motivation
 
 API
 ---
+####extends()
+#####params : Superclass (Function)
+#####returns : void
 
 ####API Caveats
 
