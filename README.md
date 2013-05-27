@@ -15,7 +15,7 @@ Extends a class to have all the functionality of the specified Superclass.
   }.extends(Monster);
 ```
 * Superclass : The constructor function of the Superclass
-* Caveats :
+* Caveats : Only supports single extension ```this.super()``` must be called in the Subclass constructor for extension to function properly
 
 ####super(superFunction, argArray)
 * When passed super function :
