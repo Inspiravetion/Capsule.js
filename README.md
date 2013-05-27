@@ -2,7 +2,7 @@ Capsule.js
 ==========
 
 Object Extension / Interface Implementation
--------------------------------------------
+----------------------------------------
 ```javascript
 
 //Abstractclass / Interface 
