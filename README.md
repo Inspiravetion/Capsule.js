@@ -13,13 +13,16 @@ Extends a class to have all the functionality of the specified Superclass.
   var Vampire = function(){
     this.super();  
   }.extends(Monster);
+  
+  var dracula = new Vampire();
+  dracula instanceof Monster // true
 ```
 * Superclass : The constructor function of the Superclass
 * Caveats : Only supports single extension  and ```this.super()``` must be called in the Subclass constructor for extension to function properly
 
-####super(superFunction, argArray)
-* When passed super function :
-* When not passed super function :
+####super(funcName, argArray)
+Can be used in two different ways. If funcName is not present, the super gets called with this context and argArray as its parameters.
+If funcName is present, then the the Superclasses function given by funcName is called with the argArray as its parameters.
 
 ```javascript
   var Vampire = function(){
@@ -31,9 +34,9 @@ Extends a class to have all the functionality of the specified Superclass.
     //do stuff...
   }
 ```
-* superFunction : 
-* argArray :
-* Caveats :
+* funcName : the String name of the Superclasse's function to be called
+* argArray : the arguments to pass to either the Superclass constructor or one of its functions
+* Caveats : funcName must be a function on the prototype of the Superclass
 
 ####API Caveats
 
