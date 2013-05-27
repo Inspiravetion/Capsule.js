@@ -116,11 +116,11 @@ overridden by an init Object without having to explicitely check for their exist
             //"Oh you're human?...nevermind you are free to go" 
   
 ```
-*Parameters :
-  *other :
-  *mutator :
-  *global :
-*Caveats :
+* Parameters :
+  * other :
+  * mutator :
+  * global :
+* Caveats :
 
 ###projectOnto(other, options)
 
