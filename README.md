@@ -5,7 +5,7 @@ Capsule.js
 //Abstractclass / Interface 
 var TheUndead = {
   preferredMeal : 'string',
-  death_date    : 'date',
+  death_year    : 'number',
   resurect      : 'function',
   abstract      : {
     complain  : function(){
@@ -42,16 +42,16 @@ var Vampire = function(att){
   this.super([att, 'I am thirsty...you should run']);
   this.name = 'dracula';
   this.age = '267';
-}.extends(Monster).implements(TheUndead);
+}.extends(Monster).implements(TheUndead); // new Vampire('chomp') instanceof Monster == true
 
 Vampire.prototype.intimidate = function(){
-  this.super('intimidate');
-  console.log('too late...');
+  this.super('intimidate');   //prints 'I am thirsty...you should run'
+  console.log('too late...'); //'too late...'
 }
 
 Vampire.prototype.regenerate = function(){
   this.super('regenerate', [15]);
-  console.log(this.health);
+  console.log(this.health);  //prints '15'
 }
 
 ```
