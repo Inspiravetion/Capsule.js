@@ -4,10 +4,10 @@ Capsule.js
 
 //Abstractclass / Interface 
 var TheUndead = {
-  preferredMeal : 'string',
+  preferredMeal : 'string', // properties that MUST be defined and their types(based on typeof)
   death_year    : 'number',
   resurect      : 'function',
-  abstract      : {
+  abstract      : {        // definitions of properties to be used out of the box 
     complain  : function(){
       console.log('Man I could really go for some ' + this.preferredMeal);
     },
@@ -32,14 +32,11 @@ Monster.prototype.intimidate = function() {
 
 Monster.prototype.regenerate  = function(amount){ 
   this.health += amount; 
-  console.log('from the supers call :(');
 };
-
-Monster.prototype.kills = 0;
 
 //Subclass
 var Vampire = function(att){
-  this.super([att, 'I am thirsty...you should run']);
+  this.super([att, 'I am thirsty...you should run']); //calls the Superclass (Monster) with the given args
   this.name = 'dracula';
   this.age = '267';
 }.extends(Monster).implements(TheUndead); // new Vampire('chomp') instanceof Monster == true
