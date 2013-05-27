@@ -40,6 +40,39 @@ If funcName is present, then the the Superclasse's function given by funcName is
  * argArray (optional): the arguments to pass to either the Superclass constructor or one of its functions
 * Caveats : funcName must be a function on the prototype of the Superclass
 
+####implements(interfaceObj)
+Adds each property of the interfaceObj to an Objects prototype. If any of the properties that are not in the 'abstract' object
+are referenced or set to a value that != its current value (when used with typeof), then an error is thrown. This is to guarantee
+that you explicitely define these values to satisfy the interface. Any of the properties in the 'abstract' object of the interface
+just get added to the prototype and can be used accordingly.
+
+```javascript
+  var TheUndead = {
+    infectionStory : 'string',
+    abstract : {
+      die : function(){
+        console.log('lol too late');
+      },
+      sobStory : function(){
+        console.log('I got this way when ' + this.infectionStory + ' :(')
+      }
+    }
+  }  
+
+  var Vampire = function(){
+    this.super();  
+  }.extends(Monster).implements(TheUndead);
+  
+  var dracula = new Vampire();
+  dracula.die(); // prints 'lol too late'
+  dracula.sobStory(); // throws error because infectionStory has not been properly set yet
+  dracula.infectionStory // also throws error
+```
+* Parameters :
+ * interfaceObj : An Object literal that defines what properties should be enforced along with their acceptable values. An 'abstract' portion defines properties to be directly added to the prototype.
+* Caveats : Throws errors at runtime if a property is accessed that hasnt been implemented. This is the point however.
+
+
 ####API Caveats
 
 Object Extension / Interface Implementation
