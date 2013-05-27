@@ -12,8 +12,8 @@ API
     this.super();  
   }.extends(Monster);
 ```
-> Superclass : The constructor function of the Superclass
-> Extends a class to have all the functionality of the specified Superclass. 
+* Superclass : The constructor function of the Superclass
+* Extends a class to have all the functionality of the specified Superclass. 
 
 ####API Caveats
 
