@@ -12,8 +12,8 @@ API
     this.super();  
   }.extends(Superclass);
 ```
-params  : The constructor function of the Superclass
-Extends a class to have all the functionality of the specified Superclass. 
+>params  : The constructor function of the Superclass
+>Extends a class to have all the functionality of the specified Superclass. 
 
 ####API Caveats
 
