@@ -61,7 +61,7 @@ just get added to the prototype and can be used accordingly. This can be chained
 
   var Vampire = function(){
     this.super();  
-  }.extends(Monster).implements(TheUndead);
+  }.implements(TheUndead);
   
   var dracula = new Vampire();
   dracula.die(); // prints 'lol too late'
