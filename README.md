@@ -8,13 +8,32 @@ API
 ---
 ####extends(Superclass)
 * Extends a class to have all the functionality of the specified Superclass.
+
 ```javascript
   var Vampire = function(){
     this.super();  
   }.extends(Monster);
 ```
 * Superclass : The constructor function of the Superclass
+* Caveats :
 
+####super(superFunction, argArray)
+* When passed super function :
+* When not passed super function :
+
+```javascript
+  var Vampire = function(){
+    this.super(['blood', 'transylvania']);  
+  }.extends(Monster);
+  
+  Vampire.prototype.hunt = function(){
+    this.super('hunt', ['1am', '2am']);
+    //do stuff...
+  }
+```
+* superFunction : 
+* argArray :
+* Caveats :
 ####API Caveats
 
 Object Extension / Interface Implementation
