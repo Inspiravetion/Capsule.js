@@ -44,7 +44,7 @@ If funcName is present, then the the Superclasse's function given by funcName is
 Adds each property of the interfaceObj to an Objects prototype. If any of the properties that are not in the 'abstract' object
 are referenced or set to a value that != its current value (when used with typeof), then an error is thrown. This is to guarantee
 that you explicitely define these values to satisfy the interface. Any of the properties in the 'abstract' object of the interface
-just get added to the prototype and can be used accordingly.
+just get added to the prototype and can be used accordingly. This can be chained for multiple interfaces :).
 
 ```javascript
   var TheUndead = {
