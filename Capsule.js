@@ -13,7 +13,7 @@ Object.defineProperty( Object.prototype, 'consume', {
     }
     other.projectOnto(this, {
       filter : propExists,
-      mutate : mutate
+      mutator : mutate
     });
   },
   enumerable: false
@@ -24,7 +24,7 @@ Object.defineProperty( Object.prototype, 'projectOnto', {
     var newProp, filter, mutate;
     opt = opt || {};
     filter = opt.filter || (function(){ return true });
-    mutate = opt.mutate || (function(d){ return d });
+    mutate = opt.mutator || (function(d){ return d });
     for(p in this){
       if(filter.call(this, p)){
         to[p] = mutate(this[p]);  
@@ -93,7 +93,7 @@ Object.defineProperty( Object.prototype, 'implements', {
             throw 'Error: attempting to access unimplemented interface property ' + this.p + '.';
           }.bind(obj),
           set : function(value){
-            if( typeof value != nterface[property] ){
+            if( typeof value != nterface[this.p] ){
               throw 'Error: attempting to set interface property ' + this.p + ' with incorrect type';
             }
             return value;
@@ -110,7 +110,7 @@ Object.defineProperty( Object.prototype, 'implements', {
 
 var TheUndead = {
   preferredMeal : 'string',
-  death_date    : 'date',
+  death_date    : 'number',
   resurect      : 'function',
   abstract      : {
     complain  : function(){
@@ -143,9 +143,6 @@ Monster.prototype.regenerate  = function(amount){
   this.health += amount; 
   console.log('from the supers call :(');
 };
-
-
-Monster.prototype.kills = 0;
 
 var Vampire = function(att){
   this.super([att, 'I am thirsty...you should run']);
@@ -192,6 +189,7 @@ v.regenerate();
 // v.schedule();
 // v.preferredMeal;
 // v.complain();
+v.death_date = 1991;
 
 // // Mummy.prototype.resurection = '';
 
