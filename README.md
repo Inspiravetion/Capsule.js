@@ -1,6 +1,14 @@
 Capsule.js
 ==========
 
+Motivation
+----------
+
+API
+---
+
+###API Caveats
+
 Object Extension / Interface Implementation
 ----------------------------------------
 ```javascript
