@@ -7,7 +7,7 @@ Motivation
 API
 ---
 ####extends(Superclass)
-* Extends a class to have all the functionality of the specified Superclass.
+Extends a class to have all the functionality of the specified Superclass.
 
 ```javascript
   var Vampire = function(){
@@ -34,6 +34,7 @@ API
 * superFunction : 
 * argArray :
 * Caveats :
+
 ####API Caveats
 
 Object Extension / Interface Implementation
