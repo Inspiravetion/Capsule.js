@@ -70,8 +70,11 @@ just get added to the prototype and can be used accordingly.
 ```
 * Parameters :
  * interfaceObj : An Object literal that defines what properties should be enforced along with their acceptable values. An 
-optional 'abstract' portion defines properties to be directly added to the prototype.
-* Caveats : Throws errors at runtime if a property is accessed that hasnt been implemented. This is the point however.
+optional 'abstract' portion defines properties to be directly added to the prototype. Acceptable interface property values 
+include 'undefined', 'object', 'boolean', 'number', 'string', or 'function'.
+* Caveats : Throws errors at runtime if a property is accessed that hasnt been implemented. This is the point however. The
+'this' keyword must be used to access a property of the object from with a function that is defined in the 'abstract' 
+portion of an interface Object.
 
 
 ####API Caveats
