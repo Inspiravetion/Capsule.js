@@ -7,8 +7,13 @@ Motivation
 API
 ---
 ####extends()
-#####params : Superclass (Function)
-#####returns : void
+```javascript
+  var Subclass = function(){
+    this.super();  
+  }.extends(Superclass);
+```
+params  : The constructor function of the Superclass
+Extends a class to have all the functionality of the specified Superclass. 
 
 ####API Caveats
 
