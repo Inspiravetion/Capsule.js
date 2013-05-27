@@ -69,7 +69,8 @@ just get added to the prototype and can be used accordingly.
   dracula.infectionStory // also throws error
 ```
 * Parameters :
- * interfaceObj : An Object literal that defines what properties should be enforced along with their acceptable values. An 'abstract' portion defines properties to be directly added to the prototype.
+ * interfaceObj : An Object literal that defines what properties should be enforced along with their acceptable values. An 
+optional 'abstract' portion defines properties to be directly added to the prototype.
 * Caveats : Throws errors at runtime if a property is accessed that hasnt been implemented. This is the point however.
 
 
