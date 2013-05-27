@@ -20,8 +20,8 @@ var TheUndead = {
 
 //Baseclass
 var Monster = function(att, intim){
-  this.attack = function(){ console.log(att) };
-  this.health = 0;
+  this.attack = function(){ console.log(att) }; //can only be overridden in Subclass if it is redefined in the 
+  this.health = 0;                              //Subclass construtor ***functional super() call cannot happen***
   this.intim = intim;
   this.kills = Math.random() * 100;
 };
@@ -55,9 +55,10 @@ var drac = new Vampire('chomp');
 drac instanceof Monster // true
 drac.schedule(); // prints 'I need to feed at least 2 times a day'
 drac.regenerate(); // prints 15
-drac.intimidate(); // 'I am thirsty...you should run' 'too late'
+drac.intimidate(); // 'I am thirsty...you should run' 'too late...'
 drac.complain(); // WOMP this throws 'Error: attempting to access unimplemented interface property preferredMeal.'
 drac.death_year = '1991'; // WOMP this throws Error: attempting to set interface property death_year with incorrect type
 drac.death_year = 1991;// sets the value like normal
+
 ```
 
