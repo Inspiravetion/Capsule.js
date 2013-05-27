@@ -92,7 +92,7 @@ Object Extension / Interface Implementation
 var TheUndead = {
   preferredMeal : 'string', // properties that MUST be explicitly defined and their types(based on typeof)
   death_year    : 'number',
-  resurect      : 'function',
+  resurrect     : 'function',
   abstract      : {        // definitions of properties to be used out of the box 
     complain  : function(){
       console.log('Man I could really go for some ' + this.preferredMeal);
@@ -137,6 +137,10 @@ Vampire.prototype.regenerate = function(){
   console.log(this.health);  
 }
 
+Vampire.prototype.resurrect = function(){
+  console.log('im aliiiiiive!');
+}
+
 var drac = new Vampire('chomp');
 drac instanceof Monster // true
 drac.schedule(); // prints 'I need to feed at least 2 times a day'
@@ -145,6 +149,6 @@ drac.intimidate(); // 'I am thirsty...you should run' 'too late...'
 drac.complain(); // WOMP this throws 'Error: attempting to access unimplemented interface property preferredMeal.'
 drac.death_year = '1991'; // WOMP this throws Error: attempting to set interface property death_year with incorrect type
 drac.death_year = 1991;// sets the value like normal
-
+drac.resurrect(); // no error as resurrect() was explicitely implemented
 ```
 
