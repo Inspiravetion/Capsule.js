@@ -110,6 +110,7 @@ overridden by an init Object without having to explicitely check for their exist
       return function(){ 
         console.log('Mwuahaha I overwrote your function');
         this[prop]();
+      }
     }
     return 'The Vampire ' + this[prop];
   }, true); //a.name == 'The Vampire blade' , a.attack() now prints 'Mwuahaha I overwrote your function' and then 
