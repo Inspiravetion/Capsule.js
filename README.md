@@ -76,6 +76,11 @@ include 'undefined', 'object', 'boolean', 'number', 'string', or 'function'.
 'this' keyword must be used to access a property of the object from within a function that is defined in the 'abstract' 
 portion.
 
+###consume(other, mutator, global)
+
+###projectOnto(other, options)
+
+###hasProperty(property)
 
 ####API Caveats
 
