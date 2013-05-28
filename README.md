@@ -74,7 +74,7 @@ include 'undefined', 'object', 'boolean', 'number', 'string', or 'function'.
 'this' keyword must be used to access a property of the interfaceObject from within a function that is defined in the 'abstract' portion.
 
 ###consume(other, mutator, global)
-Consumes all the properties in 'other' that are already exist in 'this'. Allows you to set default values in your code and have them
+Consumes all the properties in 'other' that already exist in 'this'. Allows you to set default values in your code and have them
 overridden by an init Object without having to explicitely check for their existence. 
 ```javascript
   var blade = {
@@ -118,9 +118,9 @@ overridden by an init Object without having to explicitely check for their exist
 ```
 * Parameters :
   * other : The Object to be consumed
-  * mutator : A function that takes the value of other's properties and returns an altered value
-  * global : If true, properties on the prototype chain will searched for and overridden, otherwise only properties that return true for this.hasOwnProperty() will be considered.
-* Caveats : You may use consume for functions BUT do not do this if you want to be able to call super on the function from a subclass as it will not be on the prototype. If you want to override a function do it explicitly on the prototype and have it use values bound to 'this' that can be consumed to change the functionality
+  * mutator (optional): A function that takes the value of other's properties and returns an altered value
+  * global (optional): If true, properties on the prototype chain will be searched for and overridden, otherwise only properties that return true for this.hasOwnProperty() will be considered.
+* Caveats : You may use consume for functions BUT do not do this if you want to be able to call super on the function from a subclass as it will not be on the prototype. If you want to override a function do it explicitly on the prototype and have it use values bound to 'this' that can be consumed to change the functionality at runtime
 
 ###projectOnto(other, options)
 
