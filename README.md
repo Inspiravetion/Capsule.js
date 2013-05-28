@@ -3,7 +3,14 @@ Capsule.js
 
 Motivation
 ----------
-I switched from traditional OOP Languages to using alot of JavaScript about a year ago and while I love the expressiveness and freedom it gives, I really miss the basic polymorphic goodness you get with other languages. Now obviously you can extend objects and such in JavaScript but it is an eyesore to say the least. There are also libraries to do this for you (underscore, google closure, etc) but they are usually very large and require you to use some type of global object to be a wrapper around the whole process. The point of this library is to make traditional OOP practices native to JavaScript Objects so that you can code with intuitive syntax and have it work how you would expect. And for those of you worried about prototype pollution, all properties I add to Object are NON-ENUMERABLE...so 'for (prop in obj)' will not be corrupted. Also did I mention it's only X kb? ;)
+I switched from traditional OOP Languages to using alot of JavaScript about a year ago and while I love the expressiveness 
+and freedom it gives, I really miss the basic polymorphic goodness you get with other languages. Now obviously you can 
+extend objects and such in JavaScript but it is an eyesore to say the least. There are also libraries to do this for you
+(underscore, google closure, etc) but they are usually very large and require you to use some type of global object to be 
+a wrapper around the whole process. The point of this library is to make traditional OOP practices native to JavaScript 
+Objects so that you can code with intuitive syntax and have it work how you would expect. And for those of you worried 
+about prototype pollution, all (API) properties added to Object are NON-ENUMERABLE...so 'for (prop in obj)' will not be 
+corrupted. Also did I mention it's only 5 kb? ;)
 
 API
 ---
