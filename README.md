@@ -3,6 +3,14 @@ Capsule.js
 
 Motivation
 ----------
+I switched from traditional OOP Languages to using alot of JavaScript about a year ago and while I love the expressiveness 
+and freedom it gives, I really miss the basic polymorphic goodness you get with other languages. Now obviously you can 
+extend objects and such in JavaScript but it is an eyesore to say the least. There are also libraries to do this for you
+(underscore, google closure, etc) but they are usually very large and require you to use some type of global object to be 
+a wrapper around the whole process. The point of this library is to make traditional OOP practices native to JavaScript 
+Objects so that you can code with intuitive syntax and have it work how you would expect. And for those of you worried 
+about prototype pollution, all (API) properties added to Object are NON-ENUMERABLE...so 'for (prop in obj)' will not be 
+corrupted. Also did I mention it's only 5 kb? ;)
 
 API
 ---
@@ -19,11 +27,12 @@ Extends a class to have all the functionality of the specified Superclass.
 ```
 * Parameters :
  * Superclass : The constructor function of the Superclass
-* Caveats : Only supports single extension  and ```this.super()``` must be called in the Subclass constructor for extension to function properly
+* Caveats : 
+  * Only supports single extension  and ```this.super()``` must be called in the Subclass constructor for extension to function properly
 
 ###super(funcName, argArray)
-Can be used in two different ways. If funcName is not present, the super gets called with this context and argArray as its parameters.
-If funcName is present, then the the Superclasse's function given by funcName is called with the argArray as its parameters.
+Can be used in two different ways. If funcName is not present, the super gets called with the callers context ('this') and argArray as its parameters.
+If funcName is present, then the the Superclasse's function given by funcName is called with the argArray as its parameters and the callers 'this' as it's context.
 
 ```javascript
   var Vampire = function(){
@@ -38,7 +47,8 @@ If funcName is present, then the the Superclasse's function given by funcName is
 * Parameters :
  * funcName (optional): the String name of the Superclasse's function to be called
  * argArray (optional): the arguments to pass to either the Superclass constructor or one of its functions
-* Caveats : funcName must be a function on the prototype of the Superclass
+* Caveats : 
+  * funcName must be a function on the prototype of the Superclass
 
 ###implements(interfaceObj)
 Adds each property of the interfaceObj to an Objects prototype. If any of the properties that are not in the 'abstract' object
@@ -59,9 +69,7 @@ just get added to the prototype and can be used accordingly. This can be chained
     }
   }  
 
-  var Vampire = function(){
-    this.super();  
-  }.extends(Monster).implements(TheUndead);
+  var Vampire = function(){}.implements(TheUndead);
   
   var dracula = new Vampire();
   dracula.die(); // prints 'lol too late'
@@ -72,17 +80,135 @@ just get added to the prototype and can be used accordingly. This can be chained
  * interfaceObj : An Object literal that defines what properties should be enforced along with their acceptable values. An 
 optional 'abstract' portion defines properties to be directly added to the prototype. Acceptable interface property values 
 include 'undefined', 'object', 'boolean', 'number', 'string', or 'function'.
-* Caveats : Throws errors at runtime if a property is accessed that hasnt been implemented. This is the point however. The
-'this' keyword must be used to access a property of the object from within a function that is defined in the 'abstract' 
-portion.
+* Caveats : 
+  * Throws errors at runtime if a property is accessed that hasnt been implemented. This is the point however. 
+  * The 'this' keyword must be used to access a property of the interfaceObject from within a function that is defined in the 'abstract' portion.
 
 ###consume(other, mutator, global)
+Consumes all the properties in 'other' that already exist in 'this'. Allows you to set default values in your code and have them
+overridden by an init Object without having to explicitely check for their existence. 
+```javascript
+  var blade = {
+    name : 'blade',
+    attack : function(){
+      console.log("Oh you're human?...nevermind you are free to go");
+    }
+  }
+  
+  var Monster = function(){};
+  
+  Monster.prototype.attack = function(){
+    console.log('grrrrrr');
+  }
+  
+  var Vampire = function(){
+    this.super();
+    this.name = 'dracula';
+    this.preferredMeal = 'blood';
+    //this.consume(); this is the ideal place to use consume()
+  }.extends(Monster);
+  
+  var a = new Vampire();
+  a.consume(blade); //a.name == 'blade' , a.attack() still prints 'grrrrrr'
+  
+  var b = new Vampire();
+  b.consume(blade, true); //a.name == 'blade' , a.attack() now prints "Oh you're human?...nevermind you are free to go"
+  
+  var c = new Vampire();
+  c.consume(blade, function(prop){
+    if(typeof prop == 'function'){
+      return function(){ 
+        console.log('Mwuahaha I overwrote your function');
+        prop();
+      }
+    }
+    return 'The Vampire ' + prop;
+  }, true); //a.name == 'The Vampire blade' , a.attack() now prints 'Mwuahaha I overwrote your function' and then 
+            //"Oh you're human?...nevermind you are free to go" 
+  
+```
+* Parameters :
+  * other : The Object to be consumed
+  * mutator (optional): A function that takes the value of other's properties and returns an altered value
+  * global (optional): If true, properties on the prototype chain will be searched for and overridden, otherwise only properties that return true for this.hasOwnProperty() will be considered.
+* Caveats : 
+  * You may use consume for functions BUT do not do this if you want to be able to call super on the function from a subclass as it will not be on the prototype. If you want to override a function do it explicitly on the prototype and have it use values bound to 'this' that can be consumed to change the functionality at runtime
+  * If you choose to use a mutator function you must deal with processing different types of data internally. There is no logic
+in consume() to differentiate between a string or function or any other type of data.
 
 ###projectOnto(other, options)
+Places all or a subset, depending on the options object, of an objects properties onto other.
+
+```javascript
+  var Monster = function(){
+    this.name = 'Munster';
+    this.age  = '212';
+  }
+  
+  Monster.prototype.eat = function(){
+    console.log('nom nom nom');
+  }
+  
+  var monster = new Monster(),
+  cleanObject = {};
+  
+  monster.projectOnto(cleanObject); // cleanObject now has the properties 'name', 'age', and 'eat' defined
+  
+  monster.projectOnto(cleanObject, {
+    filter : function(prop){
+      if(!this.hasOwnProperty(prop)){
+        return true;
+      }
+      return false;
+    }.bind(cleanObject) //must be bound...otherwise 'this' refers to monster instead of cleanObject
+  }); //will result in no change as cleanObject already has all the properties being tested for
+  
+  monster.projectOnto(cleanObject, {
+    mutator : function(prop){
+      if (typeof prop == 'function'){
+        return prop;
+      }
+      return 'Changed value: ' + prop;
+    }
+  }); //now cleanObject.name == 'Changed value: Munster' and cleanObject.age = 'Changed value: 212'
+  
+```
+* Parameters :
+  * other : The other object to copy properties to
+  * options : An object containing up to two functions (filter and mutator). The filter function will be called with the value
+of each property and should return true for all properties that should be projected onto 'other'. The mutator function will be
+passed the value of all the properties that have passed the filter test, it should return the value to be set on 'other' for the 
+property being considered. If filter is ommitted all properties will be copied. If mutator is ommitted, values will not be changed
+before they are set.
+* Caveats : 
+  * By default, this function does not place the properties onto the prototype of the given object. If you want to alter
+a prototype then it must be passed in as 'other'.
+  * Currently, while primitive type values get copied over, anything that is an object gets passed by reference. Working on a cloneing
+function to get around this.
 
 ###hasProperty(property)
+Similar to hasOwnProperty() except that it searches the whole prototype chain. Basically just syntactic sugar for the in operator
 
-####API Caveats
+```javascript
+  var Monster = function(){
+    this.name = 'Munster';
+    this.age  = '212';
+  }
+  
+  var Vampire = function(){
+    this.super();
+  }.extends(Monster);
+  
+  var vamp = new Vampire();
+  vamp.hasOwnProperty('name'); //false
+  vamp.hasProperty('name'); //true
+```
+* Parameters : 
+  * property : The String property to test for. 
+* Caveats :
+  * This cannot detect properties that are non-enumerable.
+
+###API Tips
 
 Object Extension / Interface Implementation
 ----------------------------------------
