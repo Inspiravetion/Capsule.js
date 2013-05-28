@@ -22,8 +22,8 @@ Extends a class to have all the functionality of the specified Superclass.
 * Caveats : Only supports single extension  and ```this.super()``` must be called in the Subclass constructor for extension to function properly
 
 ###super(funcName, argArray)
-Can be used in two different ways. If funcName is not present, the super gets called with this context and argArray as its parameters.
-If funcName is present, then the the Superclasse's function given by funcName is called with the argArray as its parameters.
+Can be used in two different ways. If funcName is not present, the super gets called with the callers context ('this') and argArray as its parameters.
+If funcName is present, then the the Superclasse's function given by funcName is called with the argArray as its parameters and the callers 'this' as it's context.
 
 ```javascript
   var Vampire = function(){
@@ -71,8 +71,7 @@ just get added to the prototype and can be used accordingly. This can be chained
 optional 'abstract' portion defines properties to be directly added to the prototype. Acceptable interface property values 
 include 'undefined', 'object', 'boolean', 'number', 'string', or 'function'.
 * Caveats : Throws errors at runtime if a property is accessed that hasnt been implemented. This is the point however. The
-'this' keyword must be used to access a property of the object from within a function that is defined in the 'abstract' 
-portion.
+'this' keyword must be used to access a property of the interfaceObject from within a function that is defined in the 'abstract' portion.
 
 ###consume(other, mutator, global)
 Consumes all the properties in 'other' that are already exist in 'this'. Allows you to set default values in your code and have them
@@ -106,22 +105,22 @@ overridden by an init Object without having to explicitely check for their exist
   
   var c = new Vampire();
   c.consume(blade, function(prop){
-    if(typeof this[prop] == 'function'){
+    if(typeof prop == 'function'){
       return function(){ 
         console.log('Mwuahaha I overwrote your function');
-        this[prop]();
+        prop();
       }
     }
-    return 'The Vampire ' + this[prop];
+    return 'The Vampire ' + prop;
   }, true); //a.name == 'The Vampire blade' , a.attack() now prints 'Mwuahaha I overwrote your function' and then 
             //"Oh you're human?...nevermind you are free to go" 
   
 ```
 * Parameters :
-  * other :
-  * mutator :
-  * global :
-* Caveats :
+  * other : The Object to be consumed
+  * mutator : A function that takes the value of other's properties and returns an altered value
+  * global : If true, properties on the prototype chain will searched for and overridden, otherwise only properties that return true for this.hasOwnProperty() will be considered.
+* Caveats : You may use consume for functions BUT do not do this if you want to be able to call super on the function from a subclass as it will not be on the prototype. If you want to override a function do it explicitly on the prototype and have it use values bound to 'this' that can be consumed to change the functionality
 
 ###projectOnto(other, options)
 
