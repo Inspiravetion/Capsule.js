@@ -187,8 +187,28 @@ a prototype then it must be passed in as 'other'.
 function to get around this.
 
 ###hasProperty(property)
+Similar to hasOwnProperty() except that it searches the whole prototype chain. Basically just syntactic sugar for the in operator
 
-####API Caveats
+```javascript
+  var Monster = function(){
+    this.name = 'Munster';
+    this.age  = '212';
+  }
+  
+  var Vampire = function(){
+    this.super();
+  }.extends(Monster);
+  
+  var vamp = new Vampire();
+  vamp.hasOwnProperty('name'); //false
+  vamp.hasProperty('name'); //true
+```
+* Parameters : 
+  * property : The String property to test for. 
+* Caveats :
+  * This cannot detect properties that are non-enumerable.
+
+###API Tips
 
 Object Extension / Interface Implementation
 ----------------------------------------
