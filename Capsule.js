@@ -1,4 +1,4 @@
-Object.defineProperty( Object.prototype, 'consume', {
+Object.defineProperty( Object.prototype, 'consume', { 
   value: function(other, mutate, global){
     var propExists;
     if(typeof mutate != 'function'){
@@ -106,105 +106,22 @@ Object.defineProperty( Object.prototype, 'implements', {
   enumerable: false
 });
 
-// //-----------------------------------------------------------------------------
+Object.defineProperty( Object.prototype, 'namespace', { 
+  value: function(packageStr){
+    var packages, scope, packge;
+    packages = packageStr.split('.');
+    scope = this;
+    for(var i = 0; i < packages.length; i++){
+      packge = packages[i];
+      scope[packge] = scope[packge] || {};
+      scope = scope[packge]; 
+    }
+  },
+  enumerable: false
+}); //doesnt ensure any type of dependency resolution
 
-var TheUndead = {
-  preferredMeal : 'string',
-  death_date    : 'number',
-  resurect      : 'function',
-  abstract      : {
-    complain  : function(){
-      console.log('Man I could really go for some ' + this.preferredMeal);
-    },
-    schedule  : function(){ 
-      console.log('I need to feed at least ' + this.hungerLvl + ' times a day');
-    },
-    hungerLvl : 2
-  }
-};
-
-// {}.Namespace('MyKillerGame.Villans');
-
-var Monster = function(att, intim){
-  this.attack = function(){ console.log(att) };
-  //functions should never be added to 'this'
-  //as it means they get added at runtime after the
-  //subclass defines it on its prototype
-  this.health = 0;
-  this.intim = intim;
-  this.kills = Math.random() * 100;
-};
-
-Monster.prototype.intimidate = function() {
-  console.log(this.intim);
-};
-
-Monster.prototype.regenerate  = function(amount){ 
-  this.health += amount; 
-  console.log('from the supers call :(');
-};
-
-var Vampire = function(att){
-  this.super([att, 'I am thirsty...you should run']);
-  this.name = 'dracula';
-  this.age = '267';
-}.extends(Monster).implements(TheUndead);
-
-Vampire.prototype.intimidate = function(){
-  this.super('intimidate');
-  console.log('too late...');
-}
-
-Vampire.prototype.regenerate = function(){
-  this.super('regenerate', [15]);
-  console.log(this.health);
-}
-
-// var a = function(){
-//   this.a = 1;
-//   this.b = 'wrong';
-//   this.d = 2;
-// }
-
-// var b = function(){
-//   this.b = 'right';
-//   this.c = 4;
-// }
-
-// var ab = new a();
-// var bc = new b();
-
-// ab.consume(bc, function(d){
-//   return 'mutated ' + d;
-// });
-// console.log(ab);
-
-var v = new Vampire('chomp');
-console.log(v);
-console.log(v.__proto__);
-v.intimidate();
-v.attack();
-v.regenerate();
-// console.log(v);
-// v.schedule();
-// v.preferredMeal;
-// v.complain();
-v.death_date = 1991;
-
-// // Mummy.prototype.resurection = '';
-
-// // var m = new Mummy();
-// // m.absFunc1();
-// // console.log(m.death_cause);
-// // m.projectOn(Mummy, Vampire);
-
-// // console.log(new Vampire('chomp...\n'));
-// console.log(new Vampire('chomp...\n') instanceof Monster); 
-
-// new Vampire('chomp...').attack();
-// new Vampire('chomp...').intimidate();
-// // console.log(new Monster('abc', 'def'));
-
-// console.log(a = function(){}.prototype);
-
-//snObject || Objection || Polymorph 
+Object.defineProperty( Object.prototype, 'clone', { 
+  value: function(){
+  },
+  enumerable: false
+});
