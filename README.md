@@ -304,8 +304,13 @@ Similar to hasOwnProperty() except that it searches the whole prototype chain. B
   * This cannot detect properties that are non-enumerable.
 
 ###API Tips
+* Every instance of a class should have the same functions. Prototypes dictate what properties classes have. Changing the
+Prototype on the fly  ==  'Bad News Bears'. Put functions on the Prototype when you define the class.
+* Instance variables of a class should override their inherited values. Variables can also go on the prototype, but they
+should be defined AFTER ```this.super()``` is called in the constructor function or they could be overridden with the 
+Superclass's values.
 
-Object Extension / Interface Implementation
+Object Extension / Interface Implementation Example
 ----------------------------------------
 ```javascript
 
@@ -374,7 +379,7 @@ drac.resurrect(); // no error as resurrect() was explicitely implemented
 ```
 License
 --------
-Copyright [2013] [Charles R. Lipford]
+Copyright 2013 Charles R. Lipford
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
