@@ -10,7 +10,7 @@ extend objects and such in JavaScript but it is an eyesore to say the least. The
 a wrapper around the whole process. The point of this library is to make traditional OOP practices native to JavaScript 
 Objects so that you can code with intuitive syntax and have it work how you would expect. And for those of you worried 
 about prototype pollution, all (API) properties added to Object are NON-ENUMERABLE...so 'for (prop in obj)' will not be 
-corrupted. Also did I mention it's only 5 kb? ;)
+corrupted. Also did I mention it's only 3 kb? ;)
 
 API
 ---
