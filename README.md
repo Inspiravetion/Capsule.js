@@ -71,7 +71,7 @@ organize the code in an app as well as avoid naming collisions.
   
 ```
 * Parameters :
-  * nameSpaceStr : A string delimiting nested packages with a '.'. 
+  * nameSpaceStr : A string delimiting nested packages with a '.' 
 * Caveats :
   * Provides no dependency resolution.
 
