@@ -119,13 +119,16 @@ Object.defineProperty( Object.prototype, 'implements', {
         var obj = { p : property };
         Object.defineProperty(this.prototype, property, { 
           get : function(){
-            throw 'Error: attempting to access unimplemented interface property ' + this.p + '.';
+            if(typeof this.val == 'undefined'){
+              throw 'Error: attempting to access unimplemented interface property ' + this.p + '.';
+            }
+            return this.val;
           }.bind(obj),
           set : function(value){
             if( typeof value != nterface[this.p] ){
               throw 'Error: attempting to set interface property ' + this.p + ' with incorrect type';
             }
-            return value;
+            this.val = value;
           }.bind(obj)
         });
       }
