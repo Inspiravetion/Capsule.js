@@ -24,7 +24,12 @@ Object.defineProperty( Object.prototype, 'projectOnto', {
     var newProp, filter, mutate;
     opt = opt || {};
     filter = opt.filter || (function(){ return true });
-    mutate = opt.mutator || (function(d){ return d });
+    mutate = opt.mutator || (function(d){ 
+      if(typeof d == 'object'){
+        return d.clone();
+      }
+      return d 
+    });
     for(p in this){
       if(filter.call(this, p)){
         to[p] = mutate(this[p]);  
@@ -122,6 +127,25 @@ Object.defineProperty( Object.prototype, 'namespace', {
 
 Object.defineProperty( Object.prototype, 'clone', { 
   value: function(){
+    var copy = {};
+    for(prop in this){
+      if(this[prop] instanceof Array){
+        copy[prop] = [].slice.call(this[prop]);
+      }
+      else if(this[prop] instanceof RegExp){
+        copy[prop] = new RegExp(this[prop]);
+      }
+      else if(this[prop] instanceof Date){
+        copy[prop] = new Date(this[prop].getTime());
+      }
+      else if(this[prop] && typeof this[prop] == 'object'){
+        copy[prop] = this[prop].clone();
+      }
+      else{
+        copy[prop] = this[prop];
+      }
+    }
+    return copy;
   },
   enumerable: false
 });
