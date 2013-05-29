@@ -14,6 +14,65 @@ corrupted. Also did I mention it's only 3 kb? ;)
 
 API
 ---
+
+###namespace(nameSpaceStr)
+
+```javascript
+  //FILE 1
+  namespace('Monsters.Base');
+  
+  Monsters.Base.Monster = function(){
+    this.evil = true; 
+  }
+
+  //FILE 2
+  namespace('Monsters.Interfaces');
+  
+  Monsters.Interfaces.TheUndead = {
+    attack : 'function'
+  }
+
+  // FILE 3
+  namespace('Monsters.TheUndead');
+
+  Monsters.TheUndead.Vampire = function(){
+    this.super();
+  }.extends(Monsters.Base.Monster).implements(Monsters.Interfaces.TheUndead);
+
+  Monsters.TheUndead.Vampire.prototype.attack = function(){
+    if(this.evil){
+      console.log('Chomp');
+    }
+  }
+  
+  //FILE 4
+  namespace('Monsters.TheUndead');
+
+  Monsters.TheUndead.Zombie = function(){
+    this.super();
+  }.extends(Monsters.Base.Monster).implements(Monsters.Interfaces.TheUndead);
+
+  Monsters.TheUndead.Zombie.prototype.attack = function(){
+    if(this.evil){
+      console.log('Slurp');
+    }
+  }
+  
+  //FILE 5
+  var vamp = new Monsters.TheUndead.Vampire(),
+  zombie = new Monsters.TheUndead.Zombie();
+  
+  vamp.attack(); // Chomp
+  zombie.attack(); // Slurp
+  
+  //*** FILES 1 & 2 MUST BE LOADED BEFORE FILES 3 & 4 WHICH MUST BE LOADED BEFORE FILE 5 ***
+  
+```
+* Parameters :
+  * nameSpaceStr :
+* Caveats :
+  * Provides no dependency resolution
+
 ###extends(Superclass)
 Extends a class to have all the functionality of the specified Superclass.
 
@@ -83,6 +142,42 @@ include 'undefined', 'object', 'boolean', 'number', 'string', or 'function'.
 * Caveats : 
   * Throws errors at runtime if a property is accessed that hasnt been implemented. This is the point however. 
   * The 'this' keyword must be used to access a property of the interfaceObject from within a function that is defined in the 'abstract' portion.
+
+###clone()
+Returns a deep copy of the calling object.
+
+```javascript
+  var Monster = function(){
+    this.name = 'munster';
+    this.diet = {
+      breakfast : 'brains',
+      lunch     : 'blood',
+      dinner    : 'chicken'
+    }
+  }
+  
+  Monster.prototype.yell = function(){
+    console.log(this.name.toUpperCase());
+  }
+  
+  var Vampire = function(){
+    this.super();
+  }.extends(Monster);
+  
+  var dracula = new Vampire(),
+  copy = dracula.clone();
+  
+  copy.yell() // 'MUNSTER'
+  copy.name = "this shouldn't change dracula's name";
+  copy.diet.breakfast = 'bacon';
+  
+  dracula.yell() // 'MUNSTER'
+  console.log(dracula.diet.breakfast); // 'brains'
+```
+* Parameters : N/A
+* Caveats :
+  * Not inteaded for use with DOM nodes   
+
 
 ###consume(other, mutator, global)
 Consumes all the properties in 'other' that already exist in 'this'. Allows you to set default values in your code and have them
@@ -183,8 +278,6 @@ before they are set.
 * Caveats : 
   * By default, this function does not place the properties onto the prototype of the given object. If you want to alter
 a prototype then it must be passed in as 'other'.
-  * Currently, while primitive type values get copied over, anything that is an object gets passed by reference. Working on a cloneing
-function to get around this.
 
 ###hasProperty(property)
 Similar to hasOwnProperty() except that it searches the whole prototype chain. Basically just syntactic sugar for the in operator
