@@ -149,10 +149,10 @@ be chained for multiple interfaces :).
   var Vampire = function(){}.implements(TheUndead);
   
   var dracula = new Vampire();
-  dracula.die(); //prints 'lol too late'
+  dracula.die();//prints 'lol too late'
   
-  dracula.sobStory(); //these both throw 'Error: attempting to access unimplemented interface property infectionStory.'
-  dracula.infectionStory //because infectionStory has not been properly set yet
+  dracula.sobStory();//these both throw 'Error: attempting to access unimplemented interface property infectionStory.'
+  dracula.infectionStory;//because infectionStory has not been properly set yet
 ```
 * Parameters :
  * interfaceObj : An Object literal that defines what properties should be enforced along with their acceptable values. An 
