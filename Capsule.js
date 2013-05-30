@@ -152,7 +152,7 @@ Object.defineProperty( Object.prototype, 'namespace', {
   enumerable: false
 }); 
 
-Object.defineProperty( Object.prototype, 'clone', { 
+Object.defineProperty( Object.prototype, 'clone', { //this will fail if called by [].clone or 'sdfg'.clone or anything thats not a proper 'object'
   value: function(){
     var copy = {};
     for(prop in this){
@@ -175,4 +175,64 @@ Object.defineProperty( Object.prototype, 'clone', {
     return copy;
   },
   enumerable: false
+});
+
+Object.defineProperty(Object.prototype, 'reactive', {
+  value : function(prop, initVal){
+    var self = this,
+    secret = { val : initVal };
+    self.__reactiveListeners__[prop] = self.__reactiveListeners__[prop] || [];
+    Object.defineProperty(self, prop, {
+      set : function(newVal){
+        var events = self.__reactiveListeners__[prop];
+        this.val = newVal;
+        for(var i = 0; i < events.length; i++){
+          events[i].handler.call(
+            events[i].context,
+            self, 
+            prop
+          );
+        }
+      }.bind(secret),
+      get : function(){
+        return this.val;
+      }.bind(secret),
+      enumerable : true
+    });
+  },
+  enumerable : false
+});
+
+Object.defineProperty(Object.prototype, 'arm', {
+  value : function(prop, listener, ctx){
+    ctx = ctx || this;
+    this.__reactiveListeners__[prop].push({
+      context : ctx,
+      handler : listener
+    });
+  },
+  enumerable : false
+});
+
+Object.defineProperty(Object.prototype, 'disarm', {
+  value : function(prop, listener, ctx){
+    var handlers = this.__reactiveListeners__[prop]
+    ctx = ctx || this;
+    if(!listener){
+        this.__reactiveListeners__[prop] = [];
+        return;
+    }
+    for(var i = 0; i < handlers.length; i++){
+      if(handlers[i].context == ctx && handlers[i].handler == listener){
+        handlers.splice(i, 1);
+        return;
+      }
+    }
+  },
+  enumerable : false
+});
+
+Object.defineProperty(Object.prototype, '__reactiveListeners__', {
+  value : {},
+  enumerable : false
 });
