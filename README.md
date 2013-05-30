@@ -10,7 +10,8 @@ extend objects and such in JavaScript but it is an eyesore to say the least. The
 a wrapper around the whole process. The point of this library is to make traditional OOP practices native to JavaScript 
 Objects so that you can code with intuitive syntax and have it work how you would expect. And for those of you worried 
 about prototype pollution, all (API) properties added to Object are NON-ENUMERABLE...so 'for (prop in obj)' will not be 
-corrupted. Also did I mention it's less than 7kb?
+corrupted. Along with the API bits that deal with inheritance and code reuse I also implemented reactive variables so that
+you can have handlers called whenever a specific property of an object is changed .Also did I mention it's less than 7kb?
 
 API
 ---
@@ -162,6 +163,105 @@ include 'undefined', 'object', 'boolean', 'number', 'string', or 'function'.
   * Throws errors at runtime if a property is accessed that hasnt been implemented. This is the point however. 
   * The 'this' keyword must be used to access a property of the interfaceObject from within a function that is defined in the 'abstract' portion.
 
+###reactive(propStr, value)
+Creates a reactive property on the caller with the given value. The property will then emit an event any time it is changed
+
+```javascript
+  var Reactor = function(){
+    this.reactive('bomb', 'unstable');
+    this.reactive('dud', {
+      changMe : 1
+    });
+  }
+  
+  var reactor = new Reactor();
+  
+  reactor.arm('bomb', function(){
+    console.log('KABOOOOM');
+  });
+  reactor.arm('dud', function(){
+    console.log('Fizzz');
+  });
+  
+  reactor.bomb; //'unstable'
+  reactor.bomb = 'about to explode...'; // causes callback to be called...prints 'KABOOOOM'
+
+  reactor.dud; // { changeMe : 1 }
+  reactor.dud.changeMe = 2; // nothing happens
+  reactor.dud = 2; // causes callback to be called...prints 'Fizzz'
+```
+* Parameters : 
+  * propStr : The name of the property being added
+  * value : The value to set ```this[propStr]``` to
+* Caveats : Only emits event when actual property is changed (changing reactiveObject.property will not emit events listening
+on reactiveObject)
+
+###arm(propStr, callback, context)
+Allows you to provide a handler for the event emitted when a reactive property is changed.
+```javascript
+  var Reactor = function(){
+    this.reactive('bomb', 'unstable');
+  }
+  
+  var reactor = new Reactor();
+  
+  reactor.arm('bomb', function(scope, prop){
+    console.log(this);
+    console.log(this == scope);
+    console.log(this[prop]);
+  });
+  
+  reactor.bomb; //'unstable'
+  reactor.bomb = 'about to explode...'; // prints { bomb : 'unstable' } then 'true' then 'about to explode...'
+```
+* Parameters :
+  * propStr : The string name of the target reactive property
+  * callback : A function to be called when the event is emitted. Gets passed the object holding the property and the 
+property name
+  * context (optional): a context to be used for ```this``` when the event is called. Defaults to the object calling ```arm()```
+* Caveats : 
+  * The handler callback is getting passed the actual object and property name, allowing you to get the value, __BUT__ this
+also means that you can mess up a data layer if you aren't careful 
+  * The callback should not change the propStr as this would cause an infinite loop
+
+###disarm(propStr, callback, optContext)
+Removes either a specified handler, or all handlers from a reavtive property
+
+```javascript
+  var Reactor = function(){
+	this.reactive('bomb', 'armed');
+  };
+  
+  var spark = function(){
+  	console.log('spark');
+  };
+  
+  var r = new Reactor();
+  
+  r.arm('bomb', spark);
+  r.arm('bomb', function(){
+  	console.log('fizzle');
+  });
+  r.arm('bomb', function(){
+  	console.log('boom');
+  });
+  
+  r.bomb = 'exploding'; // causes callbacks to call 'spark' then 'fizzle' then 'boom'
+  r.disarm('bomb', spark);
+  
+  r.bomb = 'no spark'; //causes callbacks to call 'fizzle then 'boom'
+  r.disarm('bomb');
+  
+  r.bomb = 'add more handlers to re-arm me!' // nothing happens
+  
+```
+* Parameters :
+  * propStr : The string name of the target reactive property
+  * callback : The handler that should be removed. If ommitted, will delete all handlers for the given propStr
+  * optContext (optional): The context of the specific handler that should be removed
+* Caveats : 
+  * To be able to remove a specific handler, the callback passed to ```arm()``` and ```disarm()``` must not be anonymous  
+
 ###clone()
 Returns a deep copy of the calling object.
 
@@ -195,7 +295,9 @@ Returns a deep copy of the calling object.
 ```
 * Parameters : N/A
 * Caveats :
-  * Not inteaded for use with DOM nodes   
+  * Not inteaded for use with DOM nodes  
+  * __Currently__ does not work if called by an 'object' that is an instance of Array, RegExp, Date, String, or Function (
+Basically it should only be called with a map-like object )
 
 
 ###consume(other, mutator, global)
