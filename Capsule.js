@@ -72,7 +72,7 @@ Object.defineProperty( Object.prototype, 'hasProperty', {
 
 Object.defineProperty( Object.prototype, 'extends', {
   value: function(superClass){
-    this.prototype = new superClass();
+    this.prototype = superClass.prototype.clone(); 
     Object.defineProperty(this.prototype, '__super__', {
       value : superClass,
       enumerable : false
@@ -88,6 +88,17 @@ Object.defineProperty( Object.prototype, 'super', {
     if(arguments.length == 1){
       if(typeof funcName == 'object'){
         args = funcName;
+        if(!this.__protoCount__){
+          Object.defineProperty(this, '__protoCount__', {
+            value : 0,
+            writable : true,
+            enumerable : false
+          });
+        }
+        for(var i = 0; i < this.__protoCount__; i++){
+          zuper = zuper.prototype.__super__;
+        }
+        this.__protoCount__++;
         if(zuper){
           zuper.apply(this, args);
         }
@@ -107,6 +118,24 @@ Object.defineProperty( Object.prototype, 'super', {
     }
   },
   enumerable: false
+});
+
+Object.defineProperty( Object.prototype, 'instanceOf', {
+  value : function(superClass){
+    var zuper;
+    if(this instanceof superClass){
+      return true;
+    }
+    zuper = this.__super__;
+    while(zuper){
+      if(zuper == superClass){
+        return true;
+      }
+      zuper = zuper.prototype.__super__ || null;
+    }
+    return false;
+  },
+  enumerable : false
 });
 
 Object.defineProperty( Object.prototype, 'implements', { 
@@ -152,20 +181,24 @@ Object.defineProperty( Object.prototype, 'namespace', {
   enumerable: false
 }); 
 
-Object.defineProperty( Object.prototype, 'clone', { //this will fail if called by [].clone or 'sdfg'.clone or anything thats not a proper 'object'
+Object.defineProperty( Object.prototype, 'clone', {
   value: function(){
-    var copy = {};
+    var copy = {}, val;
+    if(this instanceof Number || this instanceof String ||
+      this instanceof Function || this instanceof Boolean){
+      return this.valueOf();
+    }
+    if(this instanceof Array){
+      return [].slice.call(this);
+    }
+    if(this instanceof RegExp){
+      return new RegExp(this);
+    }
+    if(this instanceof Date){
+      return new Date(this.getTime());
+    }
     for(prop in this){
-      if(this[prop] instanceof Array){
-        copy[prop] = [].slice.call(this[prop]);
-      }
-      else if(this[prop] instanceof RegExp){
-        copy[prop] = new RegExp(this[prop]);
-      }
-      else if(this[prop] instanceof Date){
-        copy[prop] = new Date(this[prop].getTime());
-      }
-      else if(this[prop] && typeof this[prop] == 'object'){
+      if(this[prop]){
         copy[prop] = this[prop].clone();
       }
       else{
@@ -177,20 +210,20 @@ Object.defineProperty( Object.prototype, 'clone', { //this will fail if called b
   enumerable: false
 });
 
-Object.defineProperty(Object.prototype, 'reactive', {
-  value : function(prop, initVal){
+Object.defineProperty(Object.prototype, 'reactive', { //can only be inherited from super classes not interfaces
+  value : function(prop, initVal, singleton){                    
     var self = this,
     secret = { val : initVal };
     self.__reactiveListeners__[prop] = self.__reactiveListeners__[prop] || [];
     Object.defineProperty(self, prop, {
       set : function(newVal){
-        var events = self.__reactiveListeners__[prop];
         this.val = newVal;
+        var events = self.__reactiveListeners__[prop],
+        copy = newVal.clone();
         for(var i = 0; i < events.length; i++){
           events[i].handler.call(
             events[i].context,
-            self, 
-            prop
+            (singleton ? newVal.clone() : copy) 
           );
         }
       }.bind(secret),
