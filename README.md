@@ -10,7 +10,7 @@ extend objects and such in JavaScript but it is an eyesore to say the least. The
 a wrapper around the whole process. The point of this library is to make traditional OOP practices native to JavaScript 
 Objects so that you can code with intuitive syntax and have it work how you would expect. And for those of you worried 
 about prototype pollution, all (API) properties added to Object are NON-ENUMERABLE...so 'for (prop in obj)' will not be 
-corrupted. Also did I mention it's 5kb < ? ;)
+corrupted. Also did I mention it's less than 7kb?
 
 API
 ---
@@ -89,24 +89,39 @@ Extends a class to have all the functionality of the specified Superclass.
 * Parameters :
  * Superclass : The constructor function of the Superclass
 * Caveats : 
-  * Only supports single extension  and ```this.super()``` must be called in the Subclass constructor for extension to function properly
+  * Each class may only extend a single SuperClass
+  * ```this.super()``` must be called in the Subclass constructor for extension to function properly
 
 ###super(funcName, argArray)
 Can be used in two different ways. If funcName is not present, the super gets called with the callers context ('this') and argArray as its parameters.
 If funcName is present, then the the Superclasse's function given by funcName is called with the argArray as its parameters and the callers 'this' as it's context.
 
 ```javascript
+  var Monster = function(diet, homeland){
+    this.diet = diet;
+    this.homeland = homeland;
+  }
+  
+  Monster.prototype.hunt = function(beginning, end){
+    console.log('I am going hunting from ' + beginning + ' to ' + end);
+  }
+
   var Vampire = function(){
     this.super(['blood', 'transylvania']);  
   }.extends(Monster);
   
   Vampire.prototype.hunt = function(){
-    this.super('hunt', ['1am', '2am']);
-    //do stuff...
+    this.super('hunt', ['dusk', 'dawn']);
+    console.log("The sun doesn't agree with me");
   }
+  
+  var dracula = new Vampire();
+  dracula.diet; //blood
+  dracula.homeland; //transylvania
+  dracula.hunt(); // prints 'I am going hunting from dusk to dawn' then "The sun doesn't agree with me"
 ```
 * Parameters :
- * funcName (optional): the String name of the Superclasse's function to be called
+ * funcName (optional): the String name of the Superclass's function to be called
  * argArray (optional): the arguments to pass to either the Superclass constructor or one of its functions
 * Caveats : 
   * funcName must be a function on the prototype of the Superclass
@@ -134,9 +149,10 @@ be chained for multiple interfaces :).
   var Vampire = function(){}.implements(TheUndead);
   
   var dracula = new Vampire();
-  dracula.die(); // prints 'lol too late'
-  dracula.sobStory(); // throws error because infectionStory has not been properly set yet
-  dracula.infectionStory // also throws error
+  dracula.die(); //prints 'lol too late'
+  
+  dracula.sobStory(); //these both throw 'Error: attempting to access unimplemented interface property infectionStory.'
+  dracula.infectionStory //because infectionStory has not been properly set yet
 ```
 * Parameters :
  * interfaceObj : An Object literal that defines what properties should be enforced along with their acceptable values. An 
@@ -175,7 +191,7 @@ Returns a deep copy of the calling object.
   copy.diet.breakfast = 'bacon';
   
   dracula.yell() // 'MUNSTER'
-  console.log(dracula.diet.breakfast); // 'brains'
+  dracula.diet.breakfast; // 'brains'
 ```
 * Parameters : N/A
 * Caveats :
@@ -199,21 +215,31 @@ overridden by an init Object without having to explicitely check for their exist
     console.log('grrrrrr');
   }
   
-  var Vampire = function(){
+  var Vampire = function(initObj){
     this.super();
     this.name = 'dracula';
     this.preferredMeal = 'blood';
-    //this.consume(); this is the ideal place to use consume()
+    if(initObj){
+      this.consume(initObj); 
+    }
   }.extends(Monster);
   
-  var a = new Vampire();
-  a.consume(blade); //a.name == 'blade' , a.attack() still prints 'grrrrrr'
+  var a = new Vampire(blade); //ideal way to use consume (in constructor)
+  a.name; // 'blade' 
+  a.attack(); //prints 'grrrrrr'
   
   var b = new Vampire();
-  b.consume(blade, true); //a.name == 'blade' , a.attack() now prints "Oh you're human?...nevermind you are free to go"
+  b.consume(blade); //alternate use case (outside of constructor)
+  b.name; // 'blade' 
+  b.attack(); //prints 'grrrrrr'
   
   var c = new Vampire();
-  c.consume(blade, function(prop){
+  c.consume(blade, true); 
+  c.name // 'blade' 
+  c.attack(); //now prints "Oh you're human?...nevermind you are free to go"
+  
+  var d = new Vampire();
+  d.consume(blade, function(prop){
     if(typeof prop == 'function'){
       return function(){ 
         console.log('Mwuahaha I overwrote your function');
@@ -221,8 +247,10 @@ overridden by an init Object without having to explicitely check for their exist
       }
     }
     return 'The Vampire ' + prop;
-  }, true); //a.name == 'The Vampire blade' , a.attack() now prints 'Mwuahaha I overwrote your function' and then 
-            //"Oh you're human?...nevermind you are free to go" 
+  }, true); 
+  d.name // 'The Vampire blade' 
+  d.attack(); // now prints 'Mwuahaha I overwrote your function' and then 
+              //"Oh you're human?...nevermind you are free to go" 
   
 ```
 * Parameters :
