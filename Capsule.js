@@ -70,7 +70,7 @@ Object.defineProperty( Object.prototype, 'hasProperty', {
   enumerable: false
 });
 
-Object.defineProperty( Object.prototype, 'extends', {
+Object.defineProperty( Function.prototype, 'extends', {
   value: function(superClass){
     this.prototype = superClass.prototype.clone(); 
     Object.defineProperty(this.prototype, '__super__', {
@@ -138,7 +138,7 @@ Object.defineProperty( Object.prototype, 'instanceOf', {
   enumerable : false
 });
 
-Object.defineProperty( Object.prototype, 'implements', { 
+Object.defineProperty( Function.prototype, 'implements', { 
   value: function(nterface){
     for(property in nterface){
       if(property == 'abstract'){
@@ -223,7 +223,7 @@ Object.defineProperty(Object.prototype, 'reactive', { //can only be inherited fr
         for(var i = 0; i < events.length; i++){
           events[i].handler.call(
             events[i].context,
-            (singleton ? newVal.clone() : copy) 
+            (singleton ? copy : newVal.clone()) 
           );
         }
       }.bind(secret),

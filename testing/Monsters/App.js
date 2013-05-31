@@ -29,3 +29,7 @@ console.log(zombie.instanceOf(Monsters.Base.Character)); //true
 console.log(zombie);
 vamp.attack(zombie);
 console.log(zombie);
+
+
+
+
