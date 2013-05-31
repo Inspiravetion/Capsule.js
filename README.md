@@ -170,7 +170,7 @@ Returns true if the caller is a subclass of ```class```. Can be used with native
   
   var Vampire = function(){
     this.super();
-  }
+  }.extends(Monster);
   
   var vamp = new Vampire();
   vamp instanceof Monster; //false
