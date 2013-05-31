@@ -184,8 +184,10 @@ Returns true if the caller is a subclass of ```class```. Can be used with native
   * You should note that the instanceof opperator will not return the right value for extended classes. However 
 ```instanceOf()``` will work for both extended classes and built in types.
 
-###reactive(propStr, value)
-Creates a reactive property on the caller with the given value. The property will then emit an event any time it is changed
+###reactive(propStr, value, singleton)
+Creates a reactive property on the caller with the given value. The property will then emit an event any time it is changed.
+if ```singleton``` is true, all of the callbacks will recieve the same copy of the new value. If it is false, they will all 
+recieve their own copy of the new value.
 
 ```javascript
   var Reactor = function(){
@@ -214,6 +216,8 @@ Creates a reactive property on the caller with the given value. The property wil
 * Parameters : 
   * propStr : The name of the property being added
   * value : The value to set ```this[propStr]``` to
+  * singleton : A boolean signifying if all callbacks should get the same copy of the new value that the reactive property
+is changed to or if they should all get their own copies. Defaults to false (each gets its own copy).
 * Caveats : Only emits event when actual property is changed (changing reactiveObject.property will not emit events listening
 on reactiveObject)
 
@@ -284,7 +288,7 @@ Removes either a specified handler, or all handlers from a reavtive property
   * To be able to remove a specific handler, the callback passed to ```arm()``` and ```disarm()``` must not be anonymous  
 
 ###clone()
-Returns a deep copy of the calling object.
+Returns a deep copy of the calling object. Can be used on built in or user defined data types.
 
 ```javascript
   var Monster = function(){
@@ -313,13 +317,16 @@ Returns a deep copy of the calling object.
   
   dracula.yell() // 'MUNSTER'
   dracula.diet.breakfast; // 'brains'
+  
+  var original = [1, 2, 3],
+  copy = original.clone();
+  
+  copy.push(4); // [1, 2, 3, 4]
+  original; // [1, 2, 3]
 ```
 * Parameters : N/A
 * Caveats :
   * Not inteaded for use with DOM nodes  
-  * __Currently__ does not work if called by an 'object' that is an instance of Array, RegExp, Date, String, or Function (
-Basically it should only be called with a map-like object )
-
 
 ###consume(other, mutator, global)
 Consumes all the properties in 'other' that already exist in 'this'. Allows you to set default values in your code and have them
