@@ -249,23 +249,19 @@ Allows you to provide a handler for the event emitted when a reactive property i
   
   var reactor = new Reactor();
   
-  reactor.arm('bomb', function(scope, prop){
+  reactor.arm('bomb', function(value){
     console.log(this);
-    console.log(this == scope);
-    console.log(this[prop]);
+    console.log(value);
   });
   
   reactor.bomb; //'unstable'
-  reactor.bomb = 'about to explode...'; // prints { bomb : 'unstable' } then 'true' then 'about to explode...'
+  reactor.bomb = 'about to explode...'; // prints { bomb : 'unstable' } then 'about to explode...'
 ```
 * Parameters :
   * propStr : The string name of the target reactive property
-  * callback : A function to be called when the event is emitted. Gets passed the object holding the property and the 
-property name
+  * callback : A function to be called when the event is emitted. Gets passed the new value of the reactive property.
   * context (optional): a context to be used for ```this``` when the event is called. Defaults to the object calling ```arm()```
 * Caveats : 
-  * The handler callback is getting passed the actual object and property name, allowing you to get the value, __BUT__ this
-also means that you can mess up a data layer if you aren't careful 
   * The callback should not change the propStr as this would cause an infinite loop
 
 ###disarm(propStr, callback, optContext)
