@@ -175,11 +175,15 @@ Returns true if the caller is a subclass of ```class```. Can be used with native
   var vamp = new Vampire();
   vamp instanceof Monster; //false
   vamp.instanceOf(Monster); //true
+  
+  [].instanceOf(Array); //true
 ```
 * Parameters :
   * class : The constructor function of the presumed SuperClass to evaluate
 * Caveats : 
-  * 
+  * You should note that the instanceof opperator will not return the right value for extended classes. However 
+```instanceOf()``` will work for both extended classes and built in types.
+
 ###reactive(propStr, value)
 Creates a reactive property on the caller with the given value. The property will then emit an event any time it is changed
 
