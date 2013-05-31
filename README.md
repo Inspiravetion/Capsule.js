@@ -163,6 +163,23 @@ include 'undefined', 'object', 'boolean', 'number', 'string', or 'function'.
   * Throws errors at runtime if a property is accessed that hasnt been implemented. This is the point however. 
   * The 'this' keyword must be used to access a property of the interfaceObject from within a function that is defined in the 'abstract' portion.
 
+###instanceOf(class)
+Returns true if the caller is a subclass of ```class```. Can be used with native classes or user defined classes.
+```javascript
+  var Monster = function(){};
+  
+  var Vampire = function(){
+    this.super();
+  }
+  
+  var vamp = new Vampire();
+  vamp instanceof Monster; //false
+  vamp.instanceOf(Monster); //true
+```
+* Parameters :
+  * class : The constructor function of the presumed SuperClass to evaluate
+* Caveats : 
+  * 
 ###reactive(propStr, value)
 Creates a reactive property on the caller with the given value. The property will then emit an event any time it is changed
 
