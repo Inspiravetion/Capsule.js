@@ -190,28 +190,47 @@ if ```singleton``` is true, all of the callbacks will recieve the same copy of t
 recieve their own copy of the new value.
 
 ```javascript
-  var Reactor = function(){
-    this.reactive('bomb', 'unstable');
+  var Reactor = function(singleton){
+    this.reactive('bomb', 'unstable', singleton);
     this.reactive('dud', {
       changMe : 1
     });
   }
-  
-  var reactor = new Reactor();
-  
-  reactor.arm('bomb', function(){
+
+  var kaboom = function(value){
     console.log('KABOOOOM');
-  });
-  reactor.arm('dud', function(){
+  };
+
+  var fizz = function(){
     console.log('Fizzz');
-  });
-  
+  };
+
+  var fiz = function(value){
+    value.fizzle = 'fiz';
+  }
+
+  var zle = function(value){
+    value.fizzle += 'zle';
+    console.log(value);
+  }
+
+  var reactor = new Reactor(),
+  sharedReactor = new Reactor(true);
+
+  reactor.arm('bomb', kaboom);
+  reactor.arm('dud', fizz);
+  sharedReactor.arm('dud', fiz);
+  sharedReactor.arm('dud', zle);
+
   reactor.bomb; //'unstable'
   reactor.bomb = 'about to explode...'; // causes callback to be called...prints 'KABOOOOM'
 
   reactor.dud; // { changeMe : 1 }
   reactor.dud.changeMe = 2; // nothing happens
-  reactor.dud = 2; // causes callback to be called...prints 'Fizzz'
+  reactor.dud = {}; // causes callback to be called...prints 'Fizzz'
+
+  sharedReactor.dud = {}; // causes fiz() and zle() to be called passing them a singleton
+                          // prints { fizzle : 'fizzle' }
 ```
 * Parameters : 
   * propStr : The name of the property being added
