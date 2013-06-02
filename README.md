@@ -72,12 +72,12 @@ organize the code in an app as well as avoid naming collisions.
   
 ```
 * Parameters :
-  * nameSpaceStr : A string delimiting nested packages with a '.' 
+  * ```nameSpaceStr``` : A string delimiting nested packages with a '.' 
 * Caveats :
   * Provides no dependency resolution.
 
-###extends(Superclass)
-Extends a class to have all the functionality of the specified Superclass.
+###extends(superClass)
+Extends a class to have all the functionality of ```superClass```.
 
 ```javascript
   var Vampire = function(){
@@ -88,14 +88,14 @@ Extends a class to have all the functionality of the specified Superclass.
   dracula instanceof Monster // true
 ```
 * Parameters :
- * Superclass : The constructor function of the Superclass
+ * ```superClass``` : The constructor function of the SuperClass
 * Caveats : 
   * Each class may only extend a single SuperClass
   * ```this.super()``` must be called in the Subclass constructor for extension to function properly
 
 ###super(funcName, argArray)
-Can be used in two different ways. If funcName is not present, the super gets called with the callers context ('this') and argArray as its parameters.
-If funcName is present, then the the Superclasse's function given by funcName is called with the argArray as its parameters and the callers 'this' as it's context.
+Can be used in two different ways. If ```funcName``` is not present, the super gets called with the callers context ('this') and ```argArray``` as its parameters.
+If ```funcName``` is present, then the the SuperClass's function given by ```funcName``` is called with the ```argArray``` as its parameters and the callers 'this' as it's context.
 
 ```javascript
   var Monster = function(diet, homeland){
@@ -122,17 +122,17 @@ If funcName is present, then the the Superclasse's function given by funcName is
   dracula.hunt(); // prints 'I am going hunting from dusk to dawn' then "The sun doesn't agree with me"
 ```
 * Parameters :
- * funcName (optional): the String name of the Superclass's function to be called
- * argArray (optional): the arguments to pass to either the Superclass constructor or one of its functions
+ * ```funcName``` (optional): the String name of the SuperClass's function to be called
+ * ```argArray``` (optional): the arguments to pass to either the SuperClass constructor or one of its functions
 * Caveats : 
-  * funcName must be a function on the prototype of the Superclass
+  * funcName must be a function on the prototype of the SuperClass
 
 ###implements(interfaceObj)
-Adds each property of the interfaceObj to an Objects prototype. If any of the properties that are not in the 'abstract' object
+Adds each property of the ```interfaceObj``` to an Objects prototype. If any of the properties that are not in the 'abstract' object
 are referenced before they are explicitly defined or set to a value that != its current value (when used with typeof), 
 then an error is thrown. This is to guarantee that you explicitely define these values to satisfy the interface. Any of the 
 properties in the 'abstract' object of the interface just get added to the prototype and can be used accordingly. This can 
-be chained for multiple interfaces :).
+be chained for multiple interfaces ie. ```var myClass(){}.implements(a).implements(b);```.
 
 ```javascript
   var TheUndead = {
@@ -156,12 +156,12 @@ be chained for multiple interfaces :).
   dracula.infectionStory;//because infectionStory has not been properly set yet
 ```
 * Parameters :
- * interfaceObj : An Object literal that defines what properties should be enforced along with their acceptable values. An 
+ * ```interfaceObj``` : An Object literal that defines what properties should be enforced along with their acceptable values. An 
 optional 'abstract' portion defines properties to be directly added to the prototype. Acceptable interface property values 
-include 'undefined', 'object', 'boolean', 'number', 'string', or 'function'.
+include ```'undefined'```, ```'object'```, ```'boolean'```, ```'number'```, ```'string'```, or ```'function'```.
 * Caveats : 
   * Throws errors at runtime if a property is accessed that hasnt been implemented. This is the point however. 
-  * The 'this' keyword must be used to access a property of the interfaceObject from within a function that is defined in the 'abstract' portion.
+  * The 'this' keyword must be used to access a property of ```interfaceObject``` from within a function that is defined in the 'abstract' portion.
 
 ###instanceOf(class)
 Returns true if the caller is a subclass of ```class```. Can be used with native classes or user defined classes.
@@ -179,13 +179,13 @@ Returns true if the caller is a subclass of ```class```. Can be used with native
   [].instanceOf(Array); //true
 ```
 * Parameters :
-  * class : The constructor function of the presumed SuperClass to evaluate
+  * ```class``` : The constructor function of the presumed SuperClass to evaluate
 * Caveats : 
-  * You should note that the instanceof opperator will not return the right value for extended classes. However 
+  * You should note that the ```instanceof``` opperator will not return the right value for extended classes. However 
 ```instanceOf()``` will work for both extended classes and built in types.
 
 ###reactive(propStr, value, singleton)
-Creates a reactive property on the caller with the given value. The property will then emit an event any time it is changed.
+Creates a reactive property on the caller initialized to ```value```. The property will then emit an event any time it is changed.
 if ```singleton``` is true, all of the callbacks will recieve the same copy of the new value. If it is false, they will all 
 recieve their own copy of the new value.
 
@@ -233,12 +233,12 @@ recieve their own copy of the new value.
                           // prints { fizzle : 'fizzle' }
 ```
 * Parameters : 
-  * propStr : The name of the property being added
-  * value : The value to set ```this[propStr]``` to
-  * singleton : A boolean signifying if all callbacks should get the same copy of the new value that the reactive property
+  * ```propStr``` : The name of the property being added
+  * ```value``` : The value of the property being added
+  * ```singleton``` : A boolean signifying if all callbacks should get the same copy of the new value that the reactive property
 is changed to or if they should all get their own copies. Defaults to false (each gets its own copy).
-* Caveats : Only emits event when actual property is changed (changing reactiveObject.property will not emit events listening
-on reactiveObject)
+* Caveats : Only emits event when actual property is changed (changing ```reactiveObject.property``` will not emit events to listeners listening
+on ```reactiveObject```)
 
 ###arm(propStr, callback, context)
 Allows you to provide a handler for the event emitted when a reactive property is changed.
@@ -258,11 +258,11 @@ Allows you to provide a handler for the event emitted when a reactive property i
   reactor.bomb = 'about to explode...'; // prints { bomb : 'unstable' } then 'about to explode...'
 ```
 * Parameters :
-  * propStr : The string name of the target reactive property
-  * callback : A function to be called when the event is emitted. Gets passed the new value of the reactive property.
-  * context (optional): a context to be used for ```this``` when the event is called. Defaults to the object calling ```arm()```
+  * ```propStr``` : The string name of the target reactive property
+  * ```callback``` : A function to be called when the event is emitted. Gets passed the new value of the reactive property.
+  * ```context``` (optional): a context to be used for ```this``` when the event is called. Defaults to the object calling ```arm()```
 * Caveats : 
-  * The callback should not change the propStr as this would cause an infinite loop
+  * The callback should not change the ```propStr``` as this would cause an infinite loop
 
 ###disarm(propStr, callback, optContext)
 Removes either a specified handler, or all handlers from a reavtive property
@@ -296,9 +296,9 @@ Removes either a specified handler, or all handlers from a reavtive property
   
 ```
 * Parameters :
-  * propStr : The string name of the target reactive property
-  * callback : The handler that should be removed. If ommitted, will delete all handlers for the given propStr
-  * optContext (optional): The context of the specific handler that should be removed
+  * ```propStr``` : The string name of the target reactive property
+  * ```callback``` : The handler that should be removed. If ommitted, will delete all handlers for the given ```propStr```
+  * ```optContext``` (optional): The context of the specific handler that should be removed
 * Caveats : 
   * To be able to remove a specific handler, the callback passed to ```arm()``` and ```disarm()``` must not be anonymous  
 
@@ -344,7 +344,7 @@ Returns a deep copy of the calling object. Can be used on built in or user defin
   * Not inteaded for use with DOM nodes  
 
 ###consume(other, mutator, global)
-Consumes all the properties in 'other' that already exist in 'this'. Allows you to set default values in your code and have them
+Consumes all the properties in ```other``` that already exist in 'this'. Allows you to set default values in your code and have them
 overridden by an init Object without having to explicitely check for their existence. 
 ```javascript
   var blade = {
@@ -399,16 +399,16 @@ overridden by an init Object without having to explicitely check for their exist
   
 ```
 * Parameters :
-  * other : The Object to be consumed
-  * mutator (optional): A function that takes the value of other's properties and returns an altered value
-  * global (optional): If true, properties on the prototype chain will be searched for and overridden, otherwise only properties that return true for this.hasOwnProperty() will be considered.
+  * ```other``` : The Object to be consumed
+  * ```mutator``` (optional): A function that takes the value of other's properties and returns an altered value
+  * ```global``` (optional): If true, properties on the prototype chain will be searched for and overridden, otherwise only properties that return true for ```this.hasOwnProperty()``` will be considered.
 * Caveats : 
-  * You may use consume for functions BUT do not do this if you want to be able to call super on the function from a subclass as it will not be on the prototype. If you want to override a function do it explicitly on the prototype and have it use values bound to 'this' that can be consumed to change the functionality at runtime
+  * You may use ```consume()``` for functions BUT do not do this if you want to be able to call ```super('myFuncName')``` on the function from a subclass as it will not be on the prototype. If you want to override a function do it explicitly on the prototype and have it use values bound to 'this' that can be consumed to change the functionality at runtime
   * If you choose to use a mutator function you must deal with processing different types of data internally. There is no logic
-in consume() to differentiate between a string or function or any other type of data.
+in ```consume()``` to differentiate between a string or function or any other type of data.
 
 ###projectOnto(other, options)
-Places all or a subset, depending on the options object, of an objects properties onto other.
+Places all or a subset, depending on the options object, of an objects properties onto ```other```.
 
 ```javascript
   var Monster = function(){
@@ -445,18 +445,18 @@ Places all or a subset, depending on the options object, of an objects propertie
   
 ```
 * Parameters :
-  * other : The other object to copy properties to
-  * options : An object containing up to two functions (filter and mutator). The filter function will be called with the value
-of each property and should return true for all properties that should be projected onto 'other'. The mutator function will be
-passed the value of all the properties that have passed the filter test, it should return the value to be set on 'other' for the 
+  * ```other``` : The other object to copy properties to
+  * ```options``` (optional): An object containing up to two functions (```filter``` and ```mutator``). The filter function will be called with the value
+of each property and should return true for all properties that should be projected onto ```other```. The mutator function will be
+passed the value of all the properties that have passed the filter test, it should return the value to be set on ```other``` for the 
 property being considered. If filter is ommitted all properties will be copied. If mutator is ommitted, values will not be changed
 before they are set.
 * Caveats : 
   * By default, this function does not place the properties onto the prototype of the given object. If you want to alter
-a prototype then it must be passed in as 'other'.
+a prototype then it must be passed in as ```other```.
 
 ###hasProperty(property)
-Similar to hasOwnProperty() except that it searches the whole prototype chain. Basically just syntactic sugar for the in operator
+Similar to ```hasOwnProperty()``` except that it searches the whole prototype chain. Basically just syntactic sugar for the ```in``` operator
 
 ```javascript
   var Monster = function(){
@@ -473,7 +473,7 @@ Similar to hasOwnProperty() except that it searches the whole prototype chain. B
   vamp.hasProperty('name'); //true
 ```
 * Parameters : 
-  * property : The String property to test for. 
+  * ```property``` : The String property to test for. 
 * Caveats :
   * This cannot detect properties that are non-enumerable.
 
