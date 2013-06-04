@@ -52,7 +52,7 @@ Object.defineProperty( Object.prototype, 'projectOnto', {
       if(typeof d == 'object'){
         return d.clone();
       }
-      return d 
+      return d;
     });
     for(p in this){
       if(filter.call(this, p)){
@@ -214,7 +214,7 @@ Object.defineProperty( Object.prototype, 'clone', {
   enumerable: false
 });
 
-Object.defineProperty(Object.prototype, 'reactive', { //can only be inherited from super classes not interfaces
+Object.defineProperty(Object.prototype, 'reactive', { 
   value : function(prop, initVal, singleton){                    
     var self = this,
     secret = { val : initVal };

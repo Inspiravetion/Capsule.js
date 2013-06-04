@@ -5,15 +5,14 @@ zombie = new Monsters.TheUndead.Zombie('garth'); //garth checking in...
 newBorn = new Monsters.TheUndead.NewBornVampire('newby'); //newby checking in... 
 human = new Monsters.Base.Hero('charlie'); //charlie checking in... 
 
-console.log(vamp);
-console.log(newBorn);
-
 vamp.attack(zombie); // I only eat heroes 
 vamp.attack(human); // Chomp
 
 zombie.attack(vamp); // I don't care that you are a monster... Slurp
 zombie.attack(human); // Slurp
-newBorn.attack(human); // 
+
+newBorn.attack(human); // Chomp
+newBorn.attack(zombie); // I only eat heroes ***inherited from Vampire***
 
 
 console.log('human: ' + human.health); // 30
@@ -27,7 +26,7 @@ zombie.arm('evil', function(value){
 });
 
 zombie.die(); // Too late...
-newBorn.die(); // Too Late... ***inherits abstract methods***
+newBorn.die(); // Too Late... ***inherits abstract method from Vampire implementing TheUndead***
 
 zombie.evil = false; //garth checking in...
 
