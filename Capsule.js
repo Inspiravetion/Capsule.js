@@ -72,7 +72,7 @@ Object.defineProperty( Object.prototype, 'hasProperty', {
 
 Object.defineProperty( Function.prototype, 'extends', {
   value: function(superClass){
-    this.prototype = superClass.prototype.clone(); 
+    this.prototype = Object.create(superClass.prototype, {});
     Object.defineProperty(this.prototype, '__super__', {
       value : superClass,
       enumerable : false
@@ -102,10 +102,14 @@ Object.defineProperty( Object.prototype, 'super', {
         if(zuper){
           zuper.apply(this, args);
         }
-        return;
+        this.__protoCount__ = 0;
       }
+      return;
     }
-    if(zuper.prototype[funcName]){
+    if (zuper.prototype[funcName] == arguments.callee.caller){
+      zuper = zuper.prototype.__super__;
+    }
+    if(zuper && zuper.prototype[funcName]){      
       zuper.prototype[funcName].apply(this, args);
     }
     else{

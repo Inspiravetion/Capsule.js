@@ -3,5 +3,10 @@
   namespace('Monsters.Interfaces');
 
   Monsters.Interfaces.TheUndead = {
-    attack : 'function'
+    attack : 'function',
+    abstract : {
+    	die : function(){
+    		console.log('Too late...');
+    	}
+    }
   }
