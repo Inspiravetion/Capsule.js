@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<head>
+  <link rel="stylesheet" type="text/css" href="github.css">
+</head>
+<body style='width:1000px;margin: 0 auto;'>
+
+<article class="markdown-body entry-content" itemprop="mainContentOfPage">
+<div class='Capsule'><span></span></div>
+<h1><a name="capsulejs" class="anchor" href="#capsulejs"><span class="octicon octicon-link"></span></a>Capsule.js</h1>
+
+<h2>
+<a name="motivation" class="anchor" href="#motivation"><span class="octicon octicon-link"></span></a>Motivation</h2>
+
+<p>I switched from traditional OOP Languages to using alot of JavaScript about a year ago and while I love the expressiveness 
+and freedom it gives, I really miss the basic polymorphic goodness you get with other languages. Now obviously you can 
+extend objects and such in JavaScript but it is an eyesore to say the least. There are also libraries to do this for you
+(underscore, google closure, etc) but they are usually very large and require you to use some type of global object to be 
+a wrapper around the whole process. The point of this library is to make traditional OOP practices native to JavaScript 
+Objects so that you can code with intuitive syntax and have it work how you would expect. And for those of you worried 
+about prototype pollution, all (API) properties added to Object are NON-ENUMERABLE...so 'for (prop in obj)' will not be 
+corrupted. Along with the API bits that deal with inheritance and code reuse I also implemented reactive variables so that
+you can have handlers called whenever a specific property of an object is changed .Also did I mention it's less than 8kb?</p>
+
+<h2>
+<a name="api" class="anchor" href="#api"><span class="octicon octicon-link"></span></a>API</h2>
+
+<h3>
+<a name="namespacenamespacestr" class="anchor" href="#namespacenamespacestr"><span class="octicon octicon-link"></span></a>namespace(nameSpaceStr)</h3>
+
+<p>Verifies that the given namespace exists in the global scope and if it doesn't, creates it. Allows you to logically
+organize the code in an app as well as avoid naming collisions.</p>
+
+<div class="highlight"><pre>  <span class="c1">//FILE 1</span>
+  <span class="nx">namespace</span><span class="p">(</span><span class="s1">'Monsters.Base'</span><span class="p">);</span>
+
+  <span class="nx">Monsters</span><span class="p">.</span><span class="nx">Base</span><span class="p">.</span><span class="nx">Monster</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">evil</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span> 
+  <span class="p">}</span>
+
+  <span class="c1">//FILE 2</span>
+  <span class="nx">namespace</span><span class="p">(</span><span class="s1">'Monsters.Interfaces'</span><span class="p">);</span>
+
+  <span class="nx">Monsters</span><span class="p">.</span><span class="nx">Interfaces</span><span class="p">.</span><span class="nx">TheUndead</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">attack</span> <span class="o">:</span> <span class="s1">'function'</span>
+  <span class="p">}</span>
+
+  <span class="c1">// FILE 3</span>
+  <span class="nx">namespace</span><span class="p">(</span><span class="s1">'Monsters.TheUndead'</span><span class="p">);</span>
+
+  <span class="nx">Monsters</span><span class="p">.</span><span class="nx">TheUndead</span><span class="p">.</span><span class="nx">Vampire</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+    <span class="k">this</span><span class="p">.</span><span class="kr">super</span><span class="p">();</span>
+  <span class="p">}.</span><span class="kr">extends</span><span class="p">(</span><span class="nx">Monsters</span><span class="p">.</span><span class="nx">Base</span><span class="p">.</span><span class="nx">Monster</span><span class="p">).</span><span class="kr">implements</span><span class="p">(</span><span class="nx">Monsters</span><span class="p">.</span><span class="nx">Interfaces</span><span class="p">.</span><span class="nx">TheUndead</span><span class="p">);</span>
+
+  <span class="nx">Monsters</span><span class="p">.</span><span class="nx">TheUndead</span><span class="p">.</span><span class="nx">Vampire</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">attack</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+    <span class="k">if</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">evil</span><span class="p">){</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'Chomp'</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="c1">//FILE 4</span>
+  <span class="nx">namespace</span><span class="p">(</span><span class="s1">'Monsters.TheUndead'</span><span class="p">);</span>
+
+  <span class="nx">Monsters</span><span class="p">.</span><span class="nx">TheUndead</span><span class="p">.</span><span class="nx">Zombie</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+    <span class="k">this</span><span class="p">.</span><span class="kr">super</span><span class="p">();</span>
+  <span class="p">}.</span><span class="kr">extends</span><span class="p">(</span><span class="nx">Monsters</span><span class="p">.</span><span class="nx">Base</span><span class="p">.</span><span class="nx">Monster</span><span class="p">).</span><span class="kr">implements</span><span class="p">(</span><span class="nx">Monsters</span><span class="p">.</span><span class="nx">Interfaces</span><span class="p">.</span><span class="nx">TheUndead</span><span class="p">);</span>
+
+  <span class="nx">Monsters</span><span class="p">.</span><span class="nx">TheUndead</span><span class="p">.</span><span class="nx">Zombie</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">attack</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+    <span class="k">if</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">evil</span><span class="p">){</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'Slurp'</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="c1">//FILE 5</span>
+  <span class="kd">var</span> <span class="nx">vamp</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Monsters</span><span class="p">.</span><span class="nx">TheUndead</span><span class="p">.</span><span class="nx">Vampire</span><span class="p">(),</span>
+  <span class="nx">zombie</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Monsters</span><span class="p">.</span><span class="nx">TheUndead</span><span class="p">.</span><span class="nx">Zombie</span><span class="p">();</span>
+
+  <span class="nx">vamp</span><span class="p">.</span><span class="nx">attack</span><span class="p">();</span> <span class="c1">// Chomp</span>
+  <span class="nx">zombie</span><span class="p">.</span><span class="nx">attack</span><span class="p">();</span> <span class="c1">// Slurp</span>
+
+  <span class="c1">//*** FILES 1 &amp; 2 MUST BE LOADED BEFORE FILES 3 &amp; 4 WHICH MUST BE LOADED BEFORE FILE 5 ***</span>
+
+</pre></div>
+
+<ul>
+<li>Parameters :
+
+<ul>
+<li>
+<code>nameSpaceStr</code> : A string delimiting nested packages with a '.' </li>
+</ul>
+</li>
+<li>Caveats :
+
+<ul>
+<li>Provides no dependency resolution.</li>
+</ul>
+</li>
+</ul><h3>
+<a name="extendssuperclass" class="anchor" href="#extendssuperclass"><span class="octicon octicon-link"></span></a>extends(superClass)</h3>
+
+<p>Extends a class to have all the functionality of <code>superClass</code>.</p>
+
+<div class="highlight"><pre>  <span class="kd">var</span> <span class="nx">Vampire</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+    <span class="k">this</span><span class="p">.</span><span class="kr">super</span><span class="p">();</span>  
+  <span class="p">}.</span><span class="kr">extends</span><span class="p">(</span><span class="nx">Monster</span><span class="p">);</span>
+
+  <span class="kd">var</span> <span class="nx">dracula</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Vampire</span><span class="p">();</span>
+  <span class="nx">dracula</span> <span class="k">instanceof</span> <span class="nx">Monster</span> <span class="c1">// true</span>
+</pre></div>
+
+<ul>
+<li>Parameters :
+
+<ul>
+<li>
+<code>superClass</code> : The constructor function of the SuperClass</li>
+</ul>
+</li>
+<li>Caveats : 
+
+<ul>
+<li>Each class may only extend a single SuperClass</li>
+<li>
+<code>this.super()</code> must be called in the Subclass constructor for extension to function properly</li>
+</ul>
+</li>
+</ul><h3>
+<a name="superfuncname-argarray" class="anchor" href="#superfuncname-argarray"><span class="octicon octicon-link"></span></a>super(funcName, argArray)</h3>
+
+<p>Can be used in two different ways. If <code>funcName</code> is not present, the super gets called with the callers context ('this') and <code>argArray</code> as its parameters.
+If <code>funcName</code> is present, then the the SuperClass's function given by <code>funcName</code> is called with the <code>argArray</code> as its parameters and the callers 'this' as it's context.</p>
+
+<div class="highlight"><pre>  <span class="kd">var</span> <span class="nx">Monster</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">diet</span><span class="p">,</span> <span class="nx">homeland</span><span class="p">){</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">diet</span> <span class="o">=</span> <span class="nx">diet</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">homeland</span> <span class="o">=</span> <span class="nx">homeland</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="nx">Monster</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">hunt</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">beginning</span><span class="p">,</span> <span class="nx">end</span><span class="p">){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'I am going hunting from '</span> <span class="o">+</span> <span class="nx">beginning</span> <span class="o">+</span> <span class="s1">' to '</span> <span class="o">+</span> <span class="nx">end</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="kd">var</span> <span class="nx">Vampire</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+    <span class="k">this</span><span class="p">.</span><span class="kr">super</span><span class="p">([</span><span class="s1">'blood'</span><span class="p">,</span> <span class="s1">'transylvania'</span><span class="p">]);</span>  
+  <span class="p">}.</span><span class="kr">extends</span><span class="p">(</span><span class="nx">Monster</span><span class="p">);</span>
+
+  <span class="nx">Vampire</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">hunt</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+    <span class="k">this</span><span class="p">.</span><span class="kr">super</span><span class="p">(</span><span class="s1">'hunt'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'dusk'</span><span class="p">,</span> <span class="s1">'dawn'</span><span class="p">]);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"The sun doesn't agree with me"</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="kd">var</span> <span class="nx">dracula</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Vampire</span><span class="p">();</span>
+  <span class="nx">dracula</span><span class="p">.</span><span class="nx">diet</span><span class="p">;</span> <span class="c1">//blood</span>
+  <span class="nx">dracula</span><span class="p">.</span><span class="nx">homeland</span><span class="p">;</span> <span class="c1">//transylvania</span>
+  <span class="nx">dracula</span><span class="p">.</span><span class="nx">hunt</span><span class="p">();</span> <span class="c1">// prints 'I am going hunting from dusk to dawn' then "The sun doesn't agree with me"</span>
+</pre></div>
+
+<ul>
+<li>Parameters :
+
+<ul>
+<li>
+<code>funcName</code> (optional): the String name of the SuperClass's function to be called</li>
+<li>
+<code>argArray</code> (optional): the arguments to pass to either the SuperClass constructor or one of its functions</li>
+</ul>
+</li>
+<li>Caveats : 
+
+<ul>
+<li>funcName must be a function on the prototype of the SuperClass</li>
+</ul>
+</li>
+</ul><h3>
+<a name="implementsinterfaceobj" class="anchor" href="#implementsinterfaceobj"><span class="octicon octicon-link"></span></a>implements(interfaceObj)</h3>
+
+<p>Adds each property of the <code>interfaceObj</code> to an Objects prototype. If any of the properties that are not in the 'abstract' object
+are referenced before they are explicitly defined or set to a value that != its current value (when used with typeof), 
+then an error is thrown. This is to guarantee that you explicitely define these values to satisfy the interface. Any of the 
+properties in the 'abstract' object of the interface just get added to the prototype and can be used accordingly. This can 
+be chained for multiple interfaces ie. <code>var myClass(){}.implements(a).implements(b);</code>.</p>
+
+<div class="highlight"><pre>  <span class="kd">var</span> <span class="nx">TheUndead</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">infectionStory</span> <span class="o">:</span> <span class="s1">'string'</span><span class="p">,</span>
+    <span class="kr">abstract</span> <span class="o">:</span> <span class="p">{</span>
+      <span class="nx">die</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'lol too late'</span><span class="p">);</span>
+      <span class="p">},</span>
+      <span class="nx">sobStory</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'I got this way when '</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">infectionStory</span> <span class="o">+</span> <span class="s1">' :('</span><span class="p">)</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>  
+
+  <span class="kd">var</span> <span class="nx">Vampire</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){}.</span><span class="kr">implements</span><span class="p">(</span><span class="nx">TheUndead</span><span class="p">);</span>
+
+  <span class="kd">var</span> <span class="nx">dracula</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Vampire</span><span class="p">();</span>
+  <span class="nx">dracula</span><span class="p">.</span><span class="nx">die</span><span class="p">();</span><span class="c1">//prints 'lol too late'</span>
+
+  <span class="nx">dracula</span><span class="p">.</span><span class="nx">sobStory</span><span class="p">();</span><span class="c1">//these both throw 'Error: attempting to access unimplemented interface property infectionStory.'</span>
+  <span class="nx">dracula</span><span class="p">.</span><span class="nx">infectionStory</span><span class="p">;</span><span class="c1">//because infectionStory has not been properly set yet</span>
+</pre></div>
+
+<ul>
+<li>Parameters :
+
+<ul>
+<li>
+<code>interfaceObj</code> : An Object literal that defines what properties should be enforced along with their acceptable values. An 
+optional 'abstract' portion defines properties to be directly added to the prototype. Acceptable interface property values 
+include <code>'undefined'</code>, <code>'object'</code>, <code>'boolean'</code>, <code>'number'</code>, <code>'string'</code>, or <code>'function'</code>.</li>
+</ul>
+</li>
+<li>Caveats : 
+
+<ul>
+<li>Throws errors at runtime if a property is accessed that hasnt been implemented. This is the point however. </li>
+<li>The 'this' keyword must be used to access a property of <code>interfaceObject</code> from within a function that is defined in the 'abstract' portion.</li>
+</ul>
+</li>
+</ul><h3>
+<a name="instanceofclass" class="anchor" href="#instanceofclass"><span class="octicon octicon-link"></span></a>instanceOf(class)</h3>
+
+<p>Returns true if the caller is a subclass of <code>class</code>. Can be used with native classes or user defined classes.</p>
+
+<div class="highlight"><pre>  <span class="kd">var</span> <span class="nx">Monster</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){};</span>
+
+  <span class="kd">var</span> <span class="nx">Vampire</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+    <span class="k">this</span><span class="p">.</span><span class="kr">super</span><span class="p">();</span>
+  <span class="p">}.</span><span class="kr">extends</span><span class="p">(</span><span class="nx">Monster</span><span class="p">);</span>
+
+  <span class="kd">var</span> <span class="nx">vamp</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Vampire</span><span class="p">();</span>
+  <span class="nx">vamp</span> <span class="k">instanceof</span> <span class="nx">Monster</span><span class="p">;</span> <span class="c1">//false</span>
+  <span class="nx">vamp</span><span class="p">.</span><span class="nx">instanceOf</span><span class="p">(</span><span class="nx">Monster</span><span class="p">);</span> <span class="c1">//true</span>
+
+  <span class="p">[].</span><span class="nx">instanceOf</span><span class="p">(</span><span class="nb">Array</span><span class="p">);</span> <span class="c1">//true</span>
+</pre></div>
+
+<ul>
+<li>Parameters :
+
+<ul>
+<li>
+<code>class</code> : The constructor function of the presumed SuperClass to evaluate</li>
+</ul>
+</li>
+<li>Caveats : 
+
+<ul>
+<li>You should note that the <code>instanceof</code> opperator will not return the right value for extended classes. However 
+<code>instanceOf()</code> will work for both extended classes and built in types.</li>
+</ul>
+</li>
+</ul><h3>
+<a name="reactivepropstr-value-singleton" class="anchor" href="#reactivepropstr-value-singleton"><span class="octicon octicon-link"></span></a>reactive(propStr, value, singleton)</h3>
+
+<p>Creates a reactive property on the caller initialized to <code>value</code>. The property will then emit an event any time it is changed.
+if <code>singleton</code> is true, all of the callbacks will recieve the same copy of the new value. If it is false, they will all 
+recieve their own copy of the new value.</p>
+
+<div class="highlight"><pre>  <span class="kd">var</span> <span class="nx">Reactor</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">singleton</span><span class="p">){</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">reactive</span><span class="p">(</span><span class="s1">'bomb'</span><span class="p">,</span> <span class="s1">'unstable'</span><span class="p">,</span> <span class="nx">singleton</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">reactive</span><span class="p">(</span><span class="s1">'dud'</span><span class="p">,</span> <span class="p">{</span>
+      <span class="nx">changMe</span> <span class="o">:</span> <span class="mi">1</span>
+    <span class="p">});</span>
+  <span class="p">}</span>
+
+  <span class="kd">var</span> <span class="nx">kaboom</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">value</span><span class="p">){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'KABOOOOM'</span><span class="p">);</span>
+  <span class="p">};</span>
+
+  <span class="kd">var</span> <span class="nx">fizz</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'Fizzz'</span><span class="p">);</span>
+  <span class="p">};</span>
+
+  <span class="kd">var</span> <span class="nx">fiz</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">value</span><span class="p">){</span>
+    <span class="nx">value</span><span class="p">.</span><span class="nx">fizzle</span> <span class="o">=</span> <span class="s1">'fiz'</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="kd">var</span> <span class="nx">zle</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">value</span><span class="p">){</span>
+    <span class="nx">value</span><span class="p">.</span><span class="nx">fizzle</span> <span class="o">+=</span> <span class="s1">'zle'</span><span class="p">;</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">value</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="kd">var</span> <span class="nx">reactor</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Reactor</span><span class="p">(),</span>
+  <span class="nx">sharedReactor</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Reactor</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+
+  <span class="nx">reactor</span><span class="p">.</span><span class="nx">arm</span><span class="p">(</span><span class="s1">'bomb'</span><span class="p">,</span> <span class="nx">kaboom</span><span class="p">);</span>
+  <span class="nx">reactor</span><span class="p">.</span><span class="nx">arm</span><span class="p">(</span><span class="s1">'dud'</span><span class="p">,</span> <span class="nx">fizz</span><span class="p">);</span>
+  <span class="nx">sharedReactor</span><span class="p">.</span><span class="nx">arm</span><span class="p">(</span><span class="s1">'dud'</span><span class="p">,</span> <span class="nx">fiz</span><span class="p">);</span>
+  <span class="nx">sharedReactor</span><span class="p">.</span><span class="nx">arm</span><span class="p">(</span><span class="s1">'dud'</span><span class="p">,</span> <span class="nx">zle</span><span class="p">);</span>
+
+  <span class="nx">reactor</span><span class="p">.</span><span class="nx">bomb</span><span class="p">;</span> <span class="c1">//'unstable'</span>
+  <span class="nx">reactor</span><span class="p">.</span><span class="nx">bomb</span> <span class="o">=</span> <span class="s1">'about to explode...'</span><span class="p">;</span> <span class="c1">// causes callback to be called...prints 'KABOOOOM'</span>
+
+  <span class="nx">reactor</span><span class="p">.</span><span class="nx">dud</span><span class="p">;</span> <span class="c1">// { changeMe : 1 }</span>
+  <span class="nx">reactor</span><span class="p">.</span><span class="nx">dud</span><span class="p">.</span><span class="nx">changeMe</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span> <span class="c1">// nothing happens</span>
+  <span class="nx">reactor</span><span class="p">.</span><span class="nx">dud</span> <span class="o">=</span> <span class="p">{};</span> <span class="c1">// causes callback to be called...prints 'Fizzz'</span>
+
+  <span class="nx">sharedReactor</span><span class="p">.</span><span class="nx">dud</span> <span class="o">=</span> <span class="p">{};</span> <span class="c1">// causes fiz() and zle() to be called passing them a singleton</span>
+                          <span class="c1">// prints { fizzle : 'fizzle' }</span>
+</pre></div>
+
+<ul>
+<li>Parameters : 
+
+<ul>
+<li>
+<code>propStr</code> : The name of the property being added</li>
+<li>
+<code>value</code> : The value of the property being added</li>
+<li>
+<code>singleton</code> : A boolean signifying if all callbacks should get the same copy of the new value that the reactive property
+is changed to or if they should all get their own copies. Defaults to false (each gets its own copy).</li>
+</ul>
+</li>
+<li>Caveats : Only emits event when actual property is changed (changing <code>reactiveObject.property</code> will not emit events to listeners listening
+on <code>reactiveObject</code>)</li>
+</ul><h3>
+<a name="armpropstr-callback-context" class="anchor" href="#armpropstr-callback-context"><span class="octicon octicon-link"></span></a>arm(propStr, callback, context)</h3>
+
+<p>Allows you to provide a handler for the event emitted when a reactive property is changed.</p>
+
+<div class="highlight"><pre>  <span class="kd">var</span> <span class="nx">Reactor</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">reactive</span><span class="p">(</span><span class="s1">'bomb'</span><span class="p">,</span> <span class="s1">'unstable'</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="kd">var</span> <span class="nx">reactor</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Reactor</span><span class="p">();</span>
+
+  <span class="nx">reactor</span><span class="p">.</span><span class="nx">arm</span><span class="p">(</span><span class="s1">'bomb'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">value</span><span class="p">){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">value</span><span class="p">);</span>
+  <span class="p">});</span>
+
+  <span class="nx">reactor</span><span class="p">.</span><span class="nx">bomb</span><span class="p">;</span> <span class="c1">//'unstable'</span>
+  <span class="nx">reactor</span><span class="p">.</span><span class="nx">bomb</span> <span class="o">=</span> <span class="s1">'about to explode...'</span><span class="p">;</span> <span class="c1">// prints { bomb : 'unstable' } then 'about to explode...'</span>
+</pre></div>
+
+<ul>
+<li>Parameters :
+
+<ul>
+<li>
+<code>propStr</code> : The string name of the target reactive property</li>
+<li>
+<code>callback</code> : A function to be called when the event is emitted. Gets passed the new value of the reactive property.</li>
+<li>
+<code>context</code> (optional): a context to be used for <code>this</code> when the event is called. Defaults to the object calling <code>arm()</code>
+</li>
+</ul>
+</li>
+<li>Caveats : 
+
+<ul>
+<li>The callback should not change the <code>propStr</code> as this would cause an infinite loop</li>
+</ul>
+</li>
+</ul><h3>
+<a name="disarmpropstr-callback-optcontext" class="anchor" href="#disarmpropstr-callback-optcontext"><span class="octicon octicon-link"></span></a>disarm(propStr, callback, optContext)</h3>
+
+<p>Removes either a specified handler, or all handlers from a reavtive property</p>
+
+<div class="highlight"><pre>  <span class="kd">var</span> <span class="nx">Reactor</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">reactive</span><span class="p">(</span><span class="s1">'bomb'</span><span class="p">,</span> <span class="s1">'armed'</span><span class="p">);</span>
+  <span class="p">};</span>
+
+  <span class="kd">var</span> <span class="nx">spark</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'spark'</span><span class="p">);</span>
+  <span class="p">};</span>
+
+  <span class="kd">var</span> <span class="nx">r</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Reactor</span><span class="p">();</span>
+
+  <span class="nx">r</span><span class="p">.</span><span class="nx">arm</span><span class="p">(</span><span class="s1">'bomb'</span><span class="p">,</span> <span class="nx">spark</span><span class="p">);</span>
+  <span class="nx">r</span><span class="p">.</span><span class="nx">arm</span><span class="p">(</span><span class="s1">'bomb'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'fizzle'</span><span class="p">);</span>
+  <span class="p">});</span>
+  <span class="nx">r</span><span class="p">.</span><span class="nx">arm</span><span class="p">(</span><span class="s1">'bomb'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'boom'</span><span class="p">);</span>
+  <span class="p">});</span>
+
+  <span class="nx">r</span><span class="p">.</span><span class="nx">bomb</span> <span class="o">=</span> <span class="s1">'exploding'</span><span class="p">;</span> <span class="c1">// causes callbacks to call 'spark' then 'fizzle' then 'boom'</span>
+  <span class="nx">r</span><span class="p">.</span><span class="nx">disarm</span><span class="p">(</span><span class="s1">'bomb'</span><span class="p">,</span> <span class="nx">spark</span><span class="p">);</span>
+
+  <span class="nx">r</span><span class="p">.</span><span class="nx">bomb</span> <span class="o">=</span> <span class="s1">'no spark'</span><span class="p">;</span> <span class="c1">//causes callbacks to call 'fizzle then 'boom'</span>
+  <span class="nx">r</span><span class="p">.</span><span class="nx">disarm</span><span class="p">(</span><span class="s1">'bomb'</span><span class="p">);</span>
+
+  <span class="nx">r</span><span class="p">.</span><span class="nx">bomb</span> <span class="o">=</span> <span class="s1">'add more handlers to re-arm me!'</span> <span class="c1">// nothing happens</span>
+
+</pre></div>
+
+<ul>
+<li>Parameters :
+
+<ul>
+<li>
+<code>propStr</code> : The string name of the target reactive property</li>
+<li>
+<code>callback</code> : The handler that should be removed. If ommitted, will delete all handlers for the given <code>propStr</code>
+</li>
+<li>
+<code>optContext</code> (optional): The context of the specific handler that should be removed</li>
+</ul>
+</li>
+<li>Caveats : 
+
+<ul>
+<li>To be able to remove a specific handler, the callback passed to <code>arm()</code> and <code>disarm()</code> must not be anonymous<br>
+</li>
+</ul>
+</li>
+</ul><h3>
+<a name="clone" class="anchor" href="#clone"><span class="octicon octicon-link"></span></a>clone()</h3>
+
+<p>Returns a deep copy of the calling object. Can be used on built in or user defined data types.</p>
+
+<div class="highlight"><pre>  <span class="kd">var</span> <span class="nx">Monster</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="s1">'munster'</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">diet</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="nx">breakfast</span> <span class="o">:</span> <span class="s1">'brains'</span><span class="p">,</span>
+      <span class="nx">lunch</span>     <span class="o">:</span> <span class="s1">'blood'</span><span class="p">,</span>
+      <span class="nx">dinner</span>    <span class="o">:</span> <span class="s1">'chicken'</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="nx">Monster</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">yell</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">name</span><span class="p">.</span><span class="nx">toUpperCase</span><span class="p">());</span>
+  <span class="p">}</span>
+
+  <span class="kd">var</span> <span class="nx">Vampire</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+    <span class="k">this</span><span class="p">.</span><span class="kr">super</span><span class="p">();</span>
+  <span class="p">}.</span><span class="kr">extends</span><span class="p">(</span><span class="nx">Monster</span><span class="p">);</span>
+
+  <span class="kd">var</span> <span class="nx">dracula</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Vampire</span><span class="p">(),</span>
+  <span class="nx">copy</span> <span class="o">=</span> <span class="nx">dracula</span><span class="p">.</span><span class="nx">clone</span><span class="p">();</span>
+
+  <span class="nx">copy</span><span class="p">.</span><span class="nx">yell</span><span class="p">()</span> <span class="c1">// 'MUNSTER'</span>
+  <span class="nx">copy</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="s2">"this shouldn't change dracula's name"</span><span class="p">;</span>
+  <span class="nx">copy</span><span class="p">.</span><span class="nx">diet</span><span class="p">.</span><span class="nx">breakfast</span> <span class="o">=</span> <span class="s1">'bacon'</span><span class="p">;</span>
+
+  <span class="nx">dracula</span><span class="p">.</span><span class="nx">yell</span><span class="p">()</span> <span class="c1">// 'MUNSTER'</span>
+  <span class="nx">dracula</span><span class="p">.</span><span class="nx">diet</span><span class="p">.</span><span class="nx">breakfast</span><span class="p">;</span> <span class="c1">// 'brains'</span>
+
+  <span class="kd">var</span> <span class="nx">original</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+  <span class="nx">copy</span> <span class="o">=</span> <span class="nx">original</span><span class="p">.</span><span class="nx">clone</span><span class="p">();</span>
+
+  <span class="nx">copy</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span> <span class="c1">// [1, 2, 3, 4]</span>
+  <span class="nx">original</span><span class="p">;</span> <span class="c1">// [1, 2, 3]</span>
+</pre></div>
+
+<ul>
+<li>Parameters : N/A</li>
+<li>Caveats :
+
+<ul>
+<li>Not inteaded for use with DOM nodes<br>
+</li>
+</ul>
+</li>
+</ul><h3>
+<a name="consumeother-mutator-global" class="anchor" href="#consumeother-mutator-global"><span class="octicon octicon-link"></span></a>consume(other, mutator, global)</h3>
+
+<p>Consumes all the properties in <code>other</code> that already exist in 'this'. Allows you to set default values in your code and have them
+overridden by an init Object without having to explicitely check for their existence. </p>
+
+<div class="highlight"><pre>  <span class="kd">var</span> <span class="nx">blade</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">name</span> <span class="o">:</span> <span class="s1">'blade'</span><span class="p">,</span>
+    <span class="nx">attack</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Oh you're human?...nevermind you are free to go"</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="kd">var</span> <span class="nx">Monster</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){};</span>
+
+  <span class="nx">Monster</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">attack</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'grrrrrr'</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="kd">var</span> <span class="nx">Vampire</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">initObj</span><span class="p">){</span>
+    <span class="k">this</span><span class="p">.</span><span class="kr">super</span><span class="p">();</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="s1">'dracula'</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">preferredMeal</span> <span class="o">=</span> <span class="s1">'blood'</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span><span class="nx">initObj</span><span class="p">){</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">consume</span><span class="p">(</span><span class="nx">initObj</span><span class="p">);</span> 
+    <span class="p">}</span>
+  <span class="p">}.</span><span class="kr">extends</span><span class="p">(</span><span class="nx">Monster</span><span class="p">);</span>
+
+  <span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Vampire</span><span class="p">(</span><span class="nx">blade</span><span class="p">);</span> <span class="c1">//ideal way to use consume (in constructor)</span>
+  <span class="nx">a</span><span class="p">.</span><span class="nx">name</span><span class="p">;</span> <span class="c1">// 'blade' </span>
+  <span class="nx">a</span><span class="p">.</span><span class="nx">attack</span><span class="p">();</span> <span class="c1">//prints 'grrrrrr'</span>
+
+  <span class="kd">var</span> <span class="nx">b</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Vampire</span><span class="p">();</span>
+  <span class="nx">b</span><span class="p">.</span><span class="nx">consume</span><span class="p">(</span><span class="nx">blade</span><span class="p">);</span> <span class="c1">//alternate use case (outside of constructor)</span>
+  <span class="nx">b</span><span class="p">.</span><span class="nx">name</span><span class="p">;</span> <span class="c1">// 'blade' </span>
+  <span class="nx">b</span><span class="p">.</span><span class="nx">attack</span><span class="p">();</span> <span class="c1">//prints 'grrrrrr'</span>
+
+  <span class="kd">var</span> <span class="nx">c</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Vampire</span><span class="p">();</span>
+  <span class="nx">c</span><span class="p">.</span><span class="nx">consume</span><span class="p">(</span><span class="nx">blade</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span> 
+  <span class="nx">c</span><span class="p">.</span><span class="nx">name</span> <span class="c1">// 'blade' </span>
+  <span class="nx">c</span><span class="p">.</span><span class="nx">attack</span><span class="p">();</span> <span class="c1">//now prints "Oh you're human?...nevermind you are free to go"</span>
+
+  <span class="kd">var</span> <span class="nx">d</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Vampire</span><span class="p">();</span>
+  <span class="nx">d</span><span class="p">.</span><span class="nx">consume</span><span class="p">(</span><span class="nx">blade</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">prop</span><span class="p">){</span>
+    <span class="k">if</span><span class="p">(</span><span class="k">typeof</span> <span class="nx">prop</span> <span class="o">==</span> <span class="s1">'function'</span><span class="p">){</span>
+      <span class="k">return</span> <span class="kd">function</span><span class="p">(){</span> 
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'Mwuahaha I overwrote your function'</span><span class="p">);</span>
+        <span class="nx">prop</span><span class="p">();</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="s1">'The Vampire '</span> <span class="o">+</span> <span class="nx">prop</span><span class="p">;</span>
+  <span class="p">},</span> <span class="kc">true</span><span class="p">);</span> 
+  <span class="nx">d</span><span class="p">.</span><span class="nx">name</span> <span class="c1">// 'The Vampire blade' </span>
+  <span class="nx">d</span><span class="p">.</span><span class="nx">attack</span><span class="p">();</span> <span class="c1">// now prints 'Mwuahaha I overwrote your function' and then </span>
+              <span class="c1">//"Oh you're human?...nevermind you are free to go" </span>
+
+</pre></div>
+
+<ul>
+<li>Parameters :
+
+<ul>
+<li>
+<code>other</code> : The Object to be consumed</li>
+<li>
+<code>mutator</code> (optional): A function that takes the value of other's properties and returns an altered value</li>
+<li>
+<code>global</code> (optional): If true, properties on the prototype chain will be searched for and overridden, otherwise only properties that return true for <code>this.hasOwnProperty()</code> will be considered.</li>
+</ul>
+</li>
+<li>Caveats : 
+
+<ul>
+<li>You may use <code>consume()</code> for functions BUT do not do this if you want to be able to call <code>super('myFuncName')</code> on the function from a subclass as it will not be on the prototype. If you want to override a function do it explicitly on the prototype and have it use values bound to 'this' that can be consumed to change the functionality at runtime</li>
+<li>If you choose to use a mutator function you must deal with processing different types of data internally. There is no logic
+in <code>consume()</code> to differentiate between a string or function or any other type of data.</li>
+</ul>
+</li>
+</ul><h3>
+<a name="projectontoother-options" class="anchor" href="#projectontoother-options"><span class="octicon octicon-link"></span></a>projectOnto(other, options)</h3>
+
+<p>Places all or a subset, depending on the options object, of an objects properties onto <code>other</code>.</p>
+
+<div class="highlight"><pre>  <span class="kd">var</span> <span class="nx">Monster</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="s1">'Munster'</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">age</span>  <span class="o">=</span> <span class="s1">'212'</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="nx">Monster</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">eat</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'nom nom nom'</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="kd">var</span> <span class="nx">monster</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Monster</span><span class="p">(),</span>
+  <span class="nx">cleanObject</span> <span class="o">=</span> <span class="p">{};</span>
+
+  <span class="nx">monster</span><span class="p">.</span><span class="nx">projectOnto</span><span class="p">(</span><span class="nx">cleanObject</span><span class="p">);</span> <span class="c1">// cleanObject now has the properties 'name', 'age', and 'eat' defined</span>
+
+  <span class="nx">monster</span><span class="p">.</span><span class="nx">projectOnto</span><span class="p">(</span><span class="nx">cleanObject</span><span class="p">,</span> <span class="p">{</span>
+    <span class="nx">filter</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">prop</span><span class="p">){</span>
+      <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span><span class="nx">prop</span><span class="p">)){</span>
+        <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="p">}.</span><span class="nx">bind</span><span class="p">(</span><span class="nx">cleanObject</span><span class="p">)</span> <span class="c1">//must be bound...otherwise 'this' refers to monster instead of cleanObject</span>
+  <span class="p">});</span> <span class="c1">//will result in no change as cleanObject already has all the properties being tested for</span>
+
+  <span class="nx">monster</span><span class="p">.</span><span class="nx">projectOnto</span><span class="p">(</span><span class="nx">cleanObject</span><span class="p">,</span> <span class="p">{</span>
+    <span class="nx">mutator</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">prop</span><span class="p">){</span>
+      <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">prop</span> <span class="o">==</span> <span class="s1">'function'</span><span class="p">){</span>
+        <span class="k">return</span> <span class="nx">prop</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">return</span> <span class="s1">'Changed value: '</span> <span class="o">+</span> <span class="nx">prop</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">});</span> <span class="c1">//now cleanObject.name == 'Changed value: Munster' and cleanObject.age = 'Changed value: 212'</span>
+
+</pre></div>
+
+<ul>
+<li>Parameters :
+
+<ul>
+<li>
+<code>other</code> : The other object to copy properties to</li>
+<li>
+<code>options</code> (optional): An object containing up to two functions (<code>filter</code> and <code>mutator``). The filter function will be called with the value
+of each property and should return true for all properties that should be projected onto</code>other<code>. The mutator function will be
+passed the value of all the properties that have passed the filter test, it should return the value to be set on</code>other``` for the 
+property being considered. If filter is ommitted all properties will be copied. If mutator is ommitted, values will not be changed
+before they are set.</li>
+</ul>
+</li>
+<li>Caveats : 
+
+<ul>
+<li>By default, this function does not place the properties onto the prototype of the given object. If you want to alter
+a prototype then it must be passed in as <code>other</code>.</li>
+</ul>
+</li>
+</ul><h3>
+<a name="haspropertyproperty" class="anchor" href="#haspropertyproperty"><span class="octicon octicon-link"></span></a>hasProperty(property)</h3>
+
+<p>Similar to <code>hasOwnProperty()</code> except that it searches the whole prototype chain. Basically just syntactic sugar for the <code>in</code> operator</p>
+
+<div class="highlight"><pre>  <span class="kd">var</span> <span class="nx">Monster</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="s1">'Munster'</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">age</span>  <span class="o">=</span> <span class="s1">'212'</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="kd">var</span> <span class="nx">Vampire</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+    <span class="k">this</span><span class="p">.</span><span class="kr">super</span><span class="p">();</span>
+  <span class="p">}.</span><span class="kr">extends</span><span class="p">(</span><span class="nx">Monster</span><span class="p">);</span>
+
+  <span class="kd">var</span> <span class="nx">vamp</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Vampire</span><span class="p">();</span>
+  <span class="nx">vamp</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span><span class="s1">'name'</span><span class="p">);</span> <span class="c1">//false</span>
+  <span class="nx">vamp</span><span class="p">.</span><span class="nx">hasProperty</span><span class="p">(</span><span class="s1">'name'</span><span class="p">);</span> <span class="c1">//true</span>
+</pre></div>
+
+<ul>
+<li>Parameters : 
+
+<ul>
+<li>
+<code>property</code> : The String property to test for. </li>
+</ul>
+</li>
+<li>Caveats :
+
+<ul>
+<li>This cannot detect properties that are non-enumerable.</li>
+</ul>
+</li>
+</ul><h3>
+<a name="api-tips" class="anchor" href="#api-tips"><span class="octicon octicon-link"></span></a>API Tips</h3>
+
+<ul>
+<li>Every instance of a class should have the same functions. Prototypes dictate what properties classes have. Changing the
+Prototype on the fly  ==  'Bad News Bears'. Put functions on the Prototype when you define the class.</li>
+<li>Instance variables of a class should override their inherited values. Variables can also go on the prototype, but they
+should be defined AFTER <code>this.super()</code> is called in the constructor function or they could be overridden with the 
+Superclass's values.</li>
+</ul><h2>
+<a name="object-extension--interface-implementation-example" class="anchor" href="#object-extension--interface-implementation-example"><span class="octicon octicon-link"></span></a>Object Extension / Interface Implementation Example</h2>
+
+<div class="highlight"><pre><span class="c1">//Abstractclass / Interface </span>
+<span class="kd">var</span> <span class="nx">TheUndead</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="nx">preferredMeal</span> <span class="o">:</span> <span class="s1">'string'</span><span class="p">,</span> <span class="c1">// properties that MUST be explicitly defined and their types(based on typeof)</span>
+  <span class="nx">death_year</span>    <span class="o">:</span> <span class="s1">'number'</span><span class="p">,</span>
+  <span class="nx">resurrect</span>     <span class="o">:</span> <span class="s1">'function'</span><span class="p">,</span>
+  <span class="kr">abstract</span>      <span class="o">:</span> <span class="p">{</span>        <span class="c1">// definitions of properties to be used out of the box </span>
+    <span class="nx">complain</span>  <span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'Man I could really go for some '</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">preferredMeal</span><span class="p">);</span>
+    <span class="p">},</span>
+    <span class="nx">schedule</span>  <span class="o">:</span> <span class="kd">function</span><span class="p">(){</span> 
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'I need to feed at least '</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">hungerLvl</span> <span class="o">+</span> <span class="s1">' times a day'</span><span class="p">);</span>
+    <span class="p">},</span>
+    <span class="nx">hungerLvl</span> <span class="o">:</span> <span class="mi">2</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="c1">//Baseclass</span>
+<span class="kd">var</span> <span class="nx">Monster</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">att</span><span class="p">,</span> <span class="nx">intim</span><span class="p">){</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">attack</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">att</span><span class="p">)</span> <span class="p">};</span> <span class="c1">//can only be overridden in Subclass if it is redefined in the </span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">health</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>                              <span class="c1">//Subclass construtor ***functional super() call cannot happen***</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">intim</span> <span class="o">=</span> <span class="nx">intim</span><span class="p">;</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">kills</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="nx">Monster</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">intimidate</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">intim</span><span class="p">);</span>
+<span class="p">};</span>
+
+<span class="nx">Monster</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">regenerate</span>  <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">amount</span><span class="p">){</span> 
+  <span class="k">this</span><span class="p">.</span><span class="nx">health</span> <span class="o">+=</span> <span class="nx">amount</span><span class="p">;</span> 
+<span class="p">};</span>
+
+<span class="c1">//Subclass</span>
+<span class="kd">var</span> <span class="nx">Vampire</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">att</span><span class="p">){</span>
+  <span class="k">this</span><span class="p">.</span><span class="kr">super</span><span class="p">([</span><span class="nx">att</span><span class="p">,</span> <span class="s1">'I am thirsty...you should run'</span><span class="p">]);</span> <span class="c1">//calls the Superclass (Monster) with the given args</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="s1">'dracula'</span><span class="p">;</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">age</span> <span class="o">=</span> <span class="s1">'267'</span><span class="p">;</span>
+<span class="p">}.</span><span class="kr">extends</span><span class="p">(</span><span class="nx">Monster</span><span class="p">).</span><span class="kr">implements</span><span class="p">(</span><span class="nx">TheUndead</span><span class="p">);</span> <span class="c1">// Intuitive syntax for 'extends' and 'implements'</span>
+
+<span class="nx">Vampire</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">intimidate</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+  <span class="k">this</span><span class="p">.</span><span class="kr">super</span><span class="p">(</span><span class="s1">'intimidate'</span><span class="p">);</span>   <span class="c1">//call Superclass function (Monster.intimidate()) with this context</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'too late...'</span><span class="p">);</span> 
+<span class="p">}</span>
+
+<span class="nx">Vampire</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">regenerate</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+  <span class="k">this</span><span class="p">.</span><span class="kr">super</span><span class="p">(</span><span class="s1">'regenerate'</span><span class="p">,</span> <span class="p">[</span><span class="mi">15</span><span class="p">]);</span> <span class="c1">//call Superclass function (Monster.regenerate()) with this context passing it args</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">health</span><span class="p">);</span>  
+<span class="p">}</span>
+
+<span class="nx">Vampire</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">resurrect</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'im aliiiiiive!'</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">var</span> <span class="nx">drac</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Vampire</span><span class="p">(</span><span class="s1">'chomp'</span><span class="p">);</span>
+<span class="nx">drac</span> <span class="k">instanceof</span> <span class="nx">Monster</span> <span class="c1">// true</span>
+<span class="nx">drac</span><span class="p">.</span><span class="nx">schedule</span><span class="p">();</span> <span class="c1">// prints 'I need to feed at least 2 times a day'</span>
+<span class="nx">drac</span><span class="p">.</span><span class="nx">regenerate</span><span class="p">();</span> <span class="c1">// prints 15</span>
+<span class="nx">drac</span><span class="p">.</span><span class="nx">intimidate</span><span class="p">();</span> <span class="c1">// 'I am thirsty...you should run' 'too late...'</span>
+<span class="nx">drac</span><span class="p">.</span><span class="nx">complain</span><span class="p">();</span> <span class="c1">// WOMP this throws 'Error: attempting to access unimplemented interface property preferredMeal.'</span>
+<span class="nx">drac</span><span class="p">.</span><span class="nx">death_year</span> <span class="o">=</span> <span class="s1">'1991'</span><span class="p">;</span> <span class="c1">// WOMP this throws Error: attempting to set interface property death_year with incorrect type</span>
+<span class="nx">drac</span><span class="p">.</span><span class="nx">death_year</span> <span class="o">=</span> <span class="mi">1991</span><span class="p">;</span><span class="c1">// sets the value like normal</span>
+<span class="nx">drac</span><span class="p">.</span><span class="nx">resurrect</span><span class="p">();</span> <span class="c1">// no error as resurrect() was explicitely implemented</span>
+</pre></div>
+
+<h2>
+<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h2>
+
+<p>The MIT License (MIT)</p>
+
+<p>Copyright (c) 2013 Charles R. Lipford</p>
+
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:</p>
+
+<p>The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.</p>
+
+<p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.</p></article>
+
+</body>
