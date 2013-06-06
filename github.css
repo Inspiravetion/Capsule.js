@@ -4,14 +4,12 @@
   background-color : #000;
   border-radius: 50px;
   position : relative;
-  box-shadow : 0px 0px 30px #0f0;
+  box-shadow : 0px 0px 30px #00c290;
   margin: 20px;
-  transition : left 2s linear;
 }
 
 .Capsule:hover{
     box-shadow : 0px 0px 30px #0ff;
-    left:500px;
 }
 
 .Capsule:after{
@@ -23,7 +21,7 @@
   top : 75px;
   border-style : solid;
   border-width: 5px 0px;
-  border-color: #0f0;
+  border-color: #00c290;
 }
 
 .Capsule:hover:after{
@@ -3108,7 +3106,8 @@ line.axis.even {
     color: #009999;
 }
 .highlight .mi {
-    color: #ef99ff;/*Charlie Lipford*/
+    color: #0077ff;/*Charlie Lipford*/
+    font-weight: bold;
 }
 .highlight .mo {
     color: #009999;
