@@ -495,72 +495,159 @@ Prototype on the fly  ==  'Bad News Bears'. Put functions on the Prototype when 
 should be defined AFTER ```this.super()``` is called in the constructor function or they could be overridden with the 
 Superclass's values.
 
-Object Extension / Interface Implementation Example
+Extended Example
 ----------------------------------------
 ```javascript
 
-//Abstractclass / Interface 
-var TheUndead = {
-  preferredMeal : 'string', // properties that MUST be explicitly defined and their types(based on typeof)
-  death_year    : 'number',
-  resurrect     : 'function',
-  abstract      : {        // definitions of properties to be used out of the box 
-    complain  : function(){
-      console.log('Man I could really go for some ' + this.preferredMeal);
+//FILE 1========================================================================
+namespace('Monsters.Base');
+
+//Character Base Class-------------------------
+Monsters.Base.Character = function(name, evil){
+  this.cheesyLine = function(line){ 
+    console.log(line);             
+  };                                
+  this.name = name;                 
+  this.health = 100;                
+  this.reactive('evil', evil);      
+  this.greet();
+}
+
+Monsters.Base.Character.prototype.greet = function(){
+  console.log(this.name + ' checking in...');
+}
+
+//Monster Base Class-------------------
+Monsters.Base.Monster = function(name){
+  this.super([name, true])
+}.extends(Monsters.Base.Character);
+
+Monsters.Base.Monster.prototype.convert = function(){
+  var hero = new Monsters.Base.Hero(this.name);
+  return hero;
+}
+
+Monsters.Base.Monster.prototype.attack = function(character, att, power){
+  if(character.instanceOf(Monsters.Base.Monster)){
+    console.log('I only eat heroes');
+    return;
+  }
+  console.log(att);
+  character.health -= power;
+}
+
+//Hero Base Class-------------------
+Monsters.Base.Hero = function(name){
+  this.super([name, false]);
+  this.cheesyLine = function(){
+    this.super('cheesyLine', ['lose the zero...get with the hero']);
+  };
+}.extends(Monsters.Base.Character);
+
+Monsters.Base.Hero.prototype.convert = function(){
+  return new Monsters.Base.Monster(this.name);
+}
+
+//FILE 2=======================================================================
+namespace('Monsters.Interfaces');
+
+//TheUndead Interface------------
+Monsters.Interfaces.TheUndead = {
+  attack    : 'function',
+  resurrect : 'function',
+  abstract : {
+    die : function(){
+      console.log('Too late...');
     },
     schedule  : function(){ 
       console.log('I need to feed at least ' + this.hungerLvl + ' times a day');
     },
     hungerLvl : 2
   }
-};
-
-//Baseclass
-var Monster = function(att, intim){
-  this.attack = function(){ console.log(att) }; //can only be overridden in Subclass if it is redefined in the 
-  this.health = 0;                              //Subclass construtor ***functional super() call cannot happen***
-  this.intim = intim;
-  this.kills = Math.random() * 100;
-};
-
-Monster.prototype.intimidate = function() {
-  console.log(this.intim);
-};
-
-Monster.prototype.regenerate  = function(amount){ 
-  this.health += amount; 
-};
-
-//Subclass
-var Vampire = function(att){
-  this.super([att, 'I am thirsty...you should run']); //calls the Superclass (Monster) with the given args
-  this.name = 'dracula';
-  this.age = '267';
-}.extends(Monster).implements(TheUndead); // Intuitive syntax for 'extends' and 'implements'
-
-Vampire.prototype.intimidate = function(){
-  this.super('intimidate');   //call Superclass function (Monster.intimidate()) with this context
-  console.log('too late...'); 
 }
 
-Vampire.prototype.regenerate = function(){
-  this.super('regenerate', [15]); //call Superclass function (Monster.regenerate()) with this context passing it args
-  console.log(this.health);  
+// FILE 3======================================================================
+namespace('Monsters.TheUndead');
+
+//Vampire Class-----------------------------
+Monsters.TheUndead.Vampire = function(name){
+  this.super([name]);
+  this.strength = 20;
+}.extends(Monsters.Base.Monster).implements(Monsters.Interfaces.TheUndead);
+
+Monsters.TheUndead.Vampire.prototype.attack = function(character){
+  this.super('attack', [character, 'Chomp', this.strength]);
 }
 
-Vampire.prototype.resurrect = function(){
-  console.log('im aliiiiiive!');
+//Vampire SubClass---------------------------------
+Monsters.TheUndead.NewBornVampire = function(name){
+  this.super([name]);
+  this.strength = 40;
+}.extends(Monsters.TheUndead.Vampire);
+
+Monsters.TheUndead.NewBornVampire.prototype.schedule = function(){
+  this.super('schedule');
+  console.log('give or take 3 or 4 meals');
 }
 
-var drac = new Vampire('chomp');
-drac instanceof Monster // true
-drac.schedule(); // prints 'I need to feed at least 2 times a day'
-drac.regenerate(); // prints 15
-drac.intimidate(); // 'I am thirsty...you should run' 'too late...'
-drac.complain(); // WOMP this throws 'Error: attempting to access unimplemented interface property preferredMeal.'
-drac.death_year = '1991'; // WOMP this throws Error: attempting to set interface property death_year with incorrect type
-drac.death_year = 1991;// sets the value like normal
-drac.resurrect(); // no error as resurrect() was explicitely implemented
+//Zombie Class----------------------------- 
+Monsters.TheUndead.Zombie = function(name){
+  this.super([name]);
+}.extends(Monsters.Base.Monster).implements(Monsters.Interfaces.TheUndead);
+
+Monsters.TheUndead.Zombie.prototype.attack = function(character){
+  if(character.instanceOf(Monsters.Base.Monster)){
+    console.log("I don't care that you are a monster...");
+  }
+  console.log('Slurp');
+  character.health -= 10;
+}
+
+//FILE 4=======================================================================
+
+var vamp = new Monsters.TheUndead.Vampire('dracula'); //dracula checking in...
+zombie = new Monsters.TheUndead.Zombie('garth'); //garth checking in... 
+newBorn = new Monsters.TheUndead.NewBornVampire('newby'); //newby checking in... 
+human = new Monsters.Base.Hero('charlie'); //charlie checking in... 
+
+vamp.attack(zombie); // I only eat heroes 
+vamp.attack(human); // Chomp
+
+zombie.attack(vamp); // I don't care that you are a monster... Slurp
+zombie.attack(human); // Slurp
+
+newBorn.attack(human); // Chomp
+newBorn.attack(zombie); // I only eat heroes ***inherited from Vampire***
+
+
+console.log('human: ' + human.health); // human: 30
+console.log('vamp: ' + vamp.health); // vamp: 90
+console.log('zombie: ' + zombie.health); // zombie: 100
+
+zombie.arm('evil', function(value){
+  if(value == false){
+    zombie = zombie.convert();
+  }
+});
+
+zombie.die(); // Too late...
+newBorn.die(); // Too Late... ***inherits abstract method from Vampire implementing TheUndead***
+
+zombie.evil = false; //garth checking in...
+
+console.log(zombie.instanceOf(Monsters.Base.Monster)); //false
+console.log(zombie.instanceOf(Monsters.Base.Hero)); //true
+console.log(zombie.instanceOf(Monsters.Base.Character)); //true
+
+console.log(zombie.evil); // false
+console.log(zombie.health); // 100
+vamp.attack(zombie); //Chomp
+console.log(zombie.health); // 80
+
+zombie.cheesyLine(); //lose the zero...get with the hero 
+newBorn.schedule(); //prints 'I need to feed at least 2 times a day' then 'give or take 3 or 4 meals'
+newBorn.resurrect(); // throws Error: attempting to access unimplemented interface property resurrect. 
+
 ```
 License
 --------
