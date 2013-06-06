@@ -2760,13 +2760,16 @@ line.axis.even {
 .markdown-body h1 {
     font-size: 2.5em;
     border-bottom: 1px solid #ddd;
+    text-shadow: 0px 0px 5px #ccffcc; /*Charlie Lipford*/
 }
 .markdown-body h2 {
     font-size: 2em;
     border-bottom: 1px solid #eee;
+    text-shadow: 0px 0px 5px #ffcccc; /*Charles Lipford*/
 }
 .markdown-body h3 {
     font-size: 1.5em;
+    text-shadow: 0px 1px 5px #bccccc; /*Charles Lipford*/
 }
 .markdown-body h4 {
     font-size: 1.2em;
@@ -3032,6 +3035,7 @@ line.axis.even {
 }
 .highlight .kc {
     font-weight: bold;
+    color: #0077ff;
 }
 .highlight .kd {
     font-weight: bold;

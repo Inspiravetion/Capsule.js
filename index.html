@@ -332,7 +332,7 @@ on <code>reactiveObject</code>)</li>
   <span class="p">});</span>
 
   <span class="nx">reactor</span><span class="p">.</span><span class="nx">bomb</span><span class="p">;</span> <span class="c1">//'unstable'</span>
-  <span class="nx">reactor</span><span class="p">.</span><span class="nx">bomb</span> <span class="o">=</span> <span class="s1">'about to explode...'</span><span class="p">;</span> <span class="c1">// prints { bomb : 'unstable' } then 'about to explode...'</span>
+  <span class="nx">reactor</span><span class="p">.</span><span class="nx">bomb</span> <span class="o">=</span> <span class="s1">'about to explode...'</span><span class="p">;</span> <span class="c1">// prints { bomb : 'about to explode...' } then 'about to explode...'</span>
 </pre></div>
 
 <ul>
@@ -579,9 +579,9 @@ in <code>consume()</code> to differentiate between a string or function or any o
 <li>
 <code>other</code> : The other object to copy properties to</li>
 <li>
-<code>options</code> (optional): An object containing up to two functions (<code>filter</code> and <code>mutator``). The filter function will be called with the value
-of each property and should return true for all properties that should be projected onto</code>other<code>. The mutator function will be
-passed the value of all the properties that have passed the filter test, it should return the value to be set on</code>other``` for the 
+<code>options</code> (optional): An object containing up to two functions (<code>filter</code> and <code>mutator</code>). The filter function will be called with the value
+of each property and should return true for all properties that should be projected onto <code>other</code>. The mutator function will be
+passed the value of all the properties that have passed the filter test, it should return the value to be set on <code>other</code> for the 
 property being considered. If filter is ommitted all properties will be copied. If mutator is ommitted, values will not be changed
 before they are set.</li>
 </ul>
