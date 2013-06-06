@@ -3,10 +3,8 @@
   <link rel="stylesheet" type="text/css" href="github.css">
 </head>
 <body style='width:1000px;margin: 0 auto;'>
-
-<article class="markdown-body entry-content" itemprop="mainContentOfPage">
-<!-- <div class='Capsule'><span></span></div> -->
-<h1><a name="capsulejs" class="anchor" href="#capsulejs"><span class="octicon octicon-link"></span></a>Capsule.js</h1>
+<article class="markdown-body entry-content" itemprop="mainContentOfPage"><h1>
+<a name="capsulejs" class="anchor" href="#capsulejs"><span class="octicon octicon-link"></span></a>Capsule.js</h1>
 
 <h2>
 <a name="motivation" class="anchor" href="#motivation"><span class="octicon octicon-link"></span></a>Motivation</h2>
@@ -133,6 +131,9 @@ If <code>funcName</code> is present, then the the SuperClass's function given by
 <div class="highlight"><pre>  <span class="kd">var</span> <span class="nx">Monster</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">diet</span><span class="p">,</span> <span class="nx">homeland</span><span class="p">){</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">diet</span> <span class="o">=</span> <span class="nx">diet</span><span class="p">;</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">homeland</span> <span class="o">=</span> <span class="nx">homeland</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">intimidate</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">intim</span><span class="p">){</span> <span class="c1">//can only be overwritten in SubClass's Constructor</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">intim</span><span class="p">);</span>
+    <span class="p">};</span>
   <span class="p">}</span>
 
   <span class="nx">Monster</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">hunt</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">beginning</span><span class="p">,</span> <span class="nx">end</span><span class="p">){</span>
@@ -141,6 +142,9 @@ If <code>funcName</code> is present, then the the SuperClass's function given by
 
   <span class="kd">var</span> <span class="nx">Vampire</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
     <span class="k">this</span><span class="p">.</span><span class="kr">super</span><span class="p">([</span><span class="s1">'blood'</span><span class="p">,</span> <span class="s1">'transylvania'</span><span class="p">]);</span>  
+    <span class="k">this</span><span class="p">.</span><span class="nx">intimidate</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>     <span class="c1">// defined AFTER super() call</span>
+        <span class="k">this</span><span class="p">.</span><span class="kr">super</span><span class="p">(</span><span class="s1">'intimidate'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'You look tasty'</span><span class="p">]);</span>   
+    <span class="p">};</span>
   <span class="p">}.</span><span class="kr">extends</span><span class="p">(</span><span class="nx">Monster</span><span class="p">);</span>
 
   <span class="nx">Vampire</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">hunt</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
@@ -152,6 +156,7 @@ If <code>funcName</code> is present, then the the SuperClass's function given by
   <span class="nx">dracula</span><span class="p">.</span><span class="nx">diet</span><span class="p">;</span> <span class="c1">//blood</span>
   <span class="nx">dracula</span><span class="p">.</span><span class="nx">homeland</span><span class="p">;</span> <span class="c1">//transylvania</span>
   <span class="nx">dracula</span><span class="p">.</span><span class="nx">hunt</span><span class="p">();</span> <span class="c1">// prints 'I am going hunting from dusk to dawn' then "The sun doesn't agree with me"</span>
+  <span class="nx">dracula</span><span class="p">.</span><span class="nx">intimidate</span><span class="p">();</span> <span class="c1">//prints 'You look tasty'</span>
 </pre></div>
 
 <ul>
@@ -167,7 +172,12 @@ If <code>funcName</code> is present, then the the SuperClass's function given by
 <li>Caveats : 
 
 <ul>
-<li>funcName must be a function on the prototype of the SuperClass</li>
+<li>
+<code>funcName</code> may be a function on the prototype of the SuperClass or an instance method of the SuperClass BUT if it is an
+instance method, than the functional super() may only be called by a SubClass's instance method AFTER the normal super() has
+been called. </li>
+<li>Calling functional super from an instance method involves more overhead and is therefore less efficient than having
+that function on the prototype.</li>
 </ul>
 </li>
 </ul><h3>
@@ -214,7 +224,8 @@ include <code>'undefined'</code>, <code>'object'</code>, <code>'boolean'</code>,
 
 <ul>
 <li>Throws errors at runtime if a property is accessed that hasnt been implemented. This is the point however. </li>
-<li>The 'this' keyword must be used to access a property of <code>interfaceObject</code> from within a function that is defined in the 'abstract' portion.</li>
+<li>
+<code>this</code> must be used to access a property of <code>interfaceObject</code> from within a function that is defined in the 'abstract' portion.</li>
 </ul>
 </li>
 </ul><h3>
@@ -580,8 +591,8 @@ in <code>consume()</code> to differentiate between a string or function or any o
 <code>other</code> : The other object to copy properties to</li>
 <li>
 <code>options</code> (optional): An object containing up to two functions (<code>filter</code> and <code>mutator</code>). The filter function will be called with the value
-of each property and should return true for all properties that should be projected onto <code>other</code>. The mutator function will be
-passed the value of all the properties that have passed the filter test, it should return the value to be set on <code>other</code> for the 
+of each property and should return true for all properties that should be projected onto<code>other</code>. The mutator function will be
+passed the value of all the properties that have passed the filter test, it should return the value to be set on<code>other</code> for the 
 property being considered. If filter is ommitted all properties will be copied. If mutator is ommitted, values will not be changed
 before they are set.</li>
 </ul>
@@ -636,70 +647,157 @@ Prototype on the fly  ==  'Bad News Bears'. Put functions on the Prototype when 
 should be defined AFTER <code>this.super()</code> is called in the constructor function or they could be overridden with the 
 Superclass's values.</li>
 </ul><h2>
-<a name="object-extension--interface-implementation-example" class="anchor" href="#object-extension--interface-implementation-example"><span class="octicon octicon-link"></span></a>Object Extension / Interface Implementation Example</h2>
+<a name="extended-example" class="anchor" href="#extended-example"><span class="octicon octicon-link"></span></a>Extended Example</h2>
 
-<div class="highlight"><pre><span class="c1">//Abstractclass / Interface </span>
-<span class="kd">var</span> <span class="nx">TheUndead</span> <span class="o">=</span> <span class="p">{</span>
-  <span class="nx">preferredMeal</span> <span class="o">:</span> <span class="s1">'string'</span><span class="p">,</span> <span class="c1">// properties that MUST be explicitly defined and their types(based on typeof)</span>
-  <span class="nx">death_year</span>    <span class="o">:</span> <span class="s1">'number'</span><span class="p">,</span>
-  <span class="nx">resurrect</span>     <span class="o">:</span> <span class="s1">'function'</span><span class="p">,</span>
-  <span class="kr">abstract</span>      <span class="o">:</span> <span class="p">{</span>        <span class="c1">// definitions of properties to be used out of the box </span>
-    <span class="nx">complain</span>  <span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
-      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'Man I could really go for some '</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">preferredMeal</span><span class="p">);</span>
+<div class="highlight"><pre><span class="c1">//FILE 1========================================================================</span>
+<span class="nx">namespace</span><span class="p">(</span><span class="s1">'Monsters.Base'</span><span class="p">);</span>
+
+<span class="c1">//Character Base Class-------------------------</span>
+<span class="nx">Monsters</span><span class="p">.</span><span class="nx">Base</span><span class="p">.</span><span class="nx">Character</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span> <span class="nx">evil</span><span class="p">){</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">cheesyLine</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">line</span><span class="p">){</span> 
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">line</span><span class="p">);</span>             
+  <span class="p">};</span>                                
+  <span class="k">this</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="nx">name</span><span class="p">;</span>                 
+  <span class="k">this</span><span class="p">.</span><span class="nx">health</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>                
+  <span class="k">this</span><span class="p">.</span><span class="nx">reactive</span><span class="p">(</span><span class="s1">'evil'</span><span class="p">,</span> <span class="nx">evil</span><span class="p">);</span>      
+  <span class="k">this</span><span class="p">.</span><span class="nx">greet</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="nx">Monsters</span><span class="p">.</span><span class="nx">Base</span><span class="p">.</span><span class="nx">Character</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">greet</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">name</span> <span class="o">+</span> <span class="s1">' checking in...'</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">//Monster Base Class-------------------</span>
+<span class="nx">Monsters</span><span class="p">.</span><span class="nx">Base</span><span class="p">.</span><span class="nx">Monster</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="p">){</span>
+  <span class="k">this</span><span class="p">.</span><span class="kr">super</span><span class="p">([</span><span class="nx">name</span><span class="p">,</span> <span class="kc">true</span><span class="p">])</span>
+<span class="p">}.</span><span class="kr">extends</span><span class="p">(</span><span class="nx">Monsters</span><span class="p">.</span><span class="nx">Base</span><span class="p">.</span><span class="nx">Character</span><span class="p">);</span>
+
+<span class="nx">Monsters</span><span class="p">.</span><span class="nx">Base</span><span class="p">.</span><span class="nx">Monster</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">convert</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+  <span class="kd">var</span> <span class="nx">hero</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Monsters</span><span class="p">.</span><span class="nx">Base</span><span class="p">.</span><span class="nx">Hero</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">name</span><span class="p">);</span>
+  <span class="k">return</span> <span class="nx">hero</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nx">Monsters</span><span class="p">.</span><span class="nx">Base</span><span class="p">.</span><span class="nx">Monster</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">attack</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">character</span><span class="p">,</span> <span class="nx">att</span><span class="p">,</span> <span class="nx">power</span><span class="p">){</span>
+  <span class="k">if</span><span class="p">(</span><span class="nx">character</span><span class="p">.</span><span class="nx">instanceOf</span><span class="p">(</span><span class="nx">Monsters</span><span class="p">.</span><span class="nx">Base</span><span class="p">.</span><span class="nx">Monster</span><span class="p">)){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'I only eat heroes'</span><span class="p">);</span>
+    <span class="k">return</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">att</span><span class="p">);</span>
+  <span class="nx">character</span><span class="p">.</span><span class="nx">health</span> <span class="o">-=</span> <span class="nx">power</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">//Hero Base Class-------------------</span>
+<span class="nx">Monsters</span><span class="p">.</span><span class="nx">Base</span><span class="p">.</span><span class="nx">Hero</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="p">){</span>
+  <span class="k">this</span><span class="p">.</span><span class="kr">super</span><span class="p">([</span><span class="nx">name</span><span class="p">,</span> <span class="kc">false</span><span class="p">]);</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">cheesyLine</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+    <span class="k">this</span><span class="p">.</span><span class="kr">super</span><span class="p">(</span><span class="s1">'cheesyLine'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'lose the zero...get with the hero'</span><span class="p">]);</span>
+  <span class="p">};</span>
+<span class="p">}.</span><span class="kr">extends</span><span class="p">(</span><span class="nx">Monsters</span><span class="p">.</span><span class="nx">Base</span><span class="p">.</span><span class="nx">Character</span><span class="p">);</span>
+
+<span class="nx">Monsters</span><span class="p">.</span><span class="nx">Base</span><span class="p">.</span><span class="nx">Hero</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">convert</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+  <span class="k">return</span> <span class="k">new</span> <span class="nx">Monsters</span><span class="p">.</span><span class="nx">Base</span><span class="p">.</span><span class="nx">Monster</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">name</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">//FILE 2=======================================================================</span>
+<span class="nx">namespace</span><span class="p">(</span><span class="s1">'Monsters.Interfaces'</span><span class="p">);</span>
+
+<span class="c1">//TheUndead Interface------------</span>
+<span class="nx">Monsters</span><span class="p">.</span><span class="nx">Interfaces</span><span class="p">.</span><span class="nx">TheUndead</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="nx">attack</span>    <span class="o">:</span> <span class="s1">'function'</span><span class="p">,</span>
+  <span class="nx">resurrect</span> <span class="o">:</span> <span class="s1">'function'</span><span class="p">,</span>
+  <span class="kr">abstract</span> <span class="o">:</span> <span class="p">{</span>
+    <span class="nx">die</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'Too late...'</span><span class="p">);</span>
     <span class="p">},</span>
     <span class="nx">schedule</span>  <span class="o">:</span> <span class="kd">function</span><span class="p">(){</span> 
       <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'I need to feed at least '</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">hungerLvl</span> <span class="o">+</span> <span class="s1">' times a day'</span><span class="p">);</span>
     <span class="p">},</span>
     <span class="nx">hungerLvl</span> <span class="o">:</span> <span class="mi">2</span>
   <span class="p">}</span>
-<span class="p">};</span>
-
-<span class="c1">//Baseclass</span>
-<span class="kd">var</span> <span class="nx">Monster</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">att</span><span class="p">,</span> <span class="nx">intim</span><span class="p">){</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">attack</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">att</span><span class="p">)</span> <span class="p">};</span> <span class="c1">//can only be overridden in Subclass if it is redefined in the </span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">health</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>                              <span class="c1">//Subclass construtor ***functional super() call cannot happen***</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">intim</span> <span class="o">=</span> <span class="nx">intim</span><span class="p">;</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">kills</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span><span class="p">;</span>
-<span class="p">};</span>
-
-<span class="nx">Monster</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">intimidate</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">intim</span><span class="p">);</span>
-<span class="p">};</span>
-
-<span class="nx">Monster</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">regenerate</span>  <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">amount</span><span class="p">){</span> 
-  <span class="k">this</span><span class="p">.</span><span class="nx">health</span> <span class="o">+=</span> <span class="nx">amount</span><span class="p">;</span> 
-<span class="p">};</span>
-
-<span class="c1">//Subclass</span>
-<span class="kd">var</span> <span class="nx">Vampire</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">att</span><span class="p">){</span>
-  <span class="k">this</span><span class="p">.</span><span class="kr">super</span><span class="p">([</span><span class="nx">att</span><span class="p">,</span> <span class="s1">'I am thirsty...you should run'</span><span class="p">]);</span> <span class="c1">//calls the Superclass (Monster) with the given args</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="s1">'dracula'</span><span class="p">;</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">age</span> <span class="o">=</span> <span class="s1">'267'</span><span class="p">;</span>
-<span class="p">}.</span><span class="kr">extends</span><span class="p">(</span><span class="nx">Monster</span><span class="p">).</span><span class="kr">implements</span><span class="p">(</span><span class="nx">TheUndead</span><span class="p">);</span> <span class="c1">// Intuitive syntax for 'extends' and 'implements'</span>
-
-<span class="nx">Vampire</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">intimidate</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
-  <span class="k">this</span><span class="p">.</span><span class="kr">super</span><span class="p">(</span><span class="s1">'intimidate'</span><span class="p">);</span>   <span class="c1">//call Superclass function (Monster.intimidate()) with this context</span>
-  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'too late...'</span><span class="p">);</span> 
 <span class="p">}</span>
 
-<span class="nx">Vampire</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">regenerate</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
-  <span class="k">this</span><span class="p">.</span><span class="kr">super</span><span class="p">(</span><span class="s1">'regenerate'</span><span class="p">,</span> <span class="p">[</span><span class="mi">15</span><span class="p">]);</span> <span class="c1">//call Superclass function (Monster.regenerate()) with this context passing it args</span>
-  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">health</span><span class="p">);</span>  
+<span class="c1">// FILE 3======================================================================</span>
+<span class="nx">namespace</span><span class="p">(</span><span class="s1">'Monsters.TheUndead'</span><span class="p">);</span>
+
+<span class="c1">//Vampire Class-----------------------------</span>
+<span class="nx">Monsters</span><span class="p">.</span><span class="nx">TheUndead</span><span class="p">.</span><span class="nx">Vampire</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="p">){</span>
+  <span class="k">this</span><span class="p">.</span><span class="kr">super</span><span class="p">([</span><span class="nx">name</span><span class="p">]);</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">strength</span> <span class="o">=</span> <span class="mi">20</span><span class="p">;</span>
+<span class="p">}.</span><span class="kr">extends</span><span class="p">(</span><span class="nx">Monsters</span><span class="p">.</span><span class="nx">Base</span><span class="p">.</span><span class="nx">Monster</span><span class="p">).</span><span class="kr">implements</span><span class="p">(</span><span class="nx">Monsters</span><span class="p">.</span><span class="nx">Interfaces</span><span class="p">.</span><span class="nx">TheUndead</span><span class="p">);</span>
+
+<span class="nx">Monsters</span><span class="p">.</span><span class="nx">TheUndead</span><span class="p">.</span><span class="nx">Vampire</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">attack</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">character</span><span class="p">){</span>
+  <span class="k">this</span><span class="p">.</span><span class="kr">super</span><span class="p">(</span><span class="s1">'attack'</span><span class="p">,</span> <span class="p">[</span><span class="nx">character</span><span class="p">,</span> <span class="s1">'Chomp'</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">strength</span><span class="p">]);</span>
 <span class="p">}</span>
 
-<span class="nx">Vampire</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">resurrect</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
-  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'im aliiiiiive!'</span><span class="p">);</span>
+<span class="c1">//Vampire SubClass---------------------------------</span>
+<span class="nx">Monsters</span><span class="p">.</span><span class="nx">TheUndead</span><span class="p">.</span><span class="nx">NewBornVampire</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="p">){</span>
+  <span class="k">this</span><span class="p">.</span><span class="kr">super</span><span class="p">([</span><span class="nx">name</span><span class="p">]);</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">strength</span> <span class="o">=</span> <span class="mi">40</span><span class="p">;</span>
+<span class="p">}.</span><span class="kr">extends</span><span class="p">(</span><span class="nx">Monsters</span><span class="p">.</span><span class="nx">TheUndead</span><span class="p">.</span><span class="nx">Vampire</span><span class="p">);</span>
+
+<span class="nx">Monsters</span><span class="p">.</span><span class="nx">TheUndead</span><span class="p">.</span><span class="nx">NewBornVampire</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">schedule</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+  <span class="k">this</span><span class="p">.</span><span class="kr">super</span><span class="p">(</span><span class="s1">'schedule'</span><span class="p">);</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'give or take 3 or 4 meals'</span><span class="p">);</span>
 <span class="p">}</span>
 
-<span class="kd">var</span> <span class="nx">drac</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Vampire</span><span class="p">(</span><span class="s1">'chomp'</span><span class="p">);</span>
-<span class="nx">drac</span> <span class="k">instanceof</span> <span class="nx">Monster</span> <span class="c1">// true</span>
-<span class="nx">drac</span><span class="p">.</span><span class="nx">schedule</span><span class="p">();</span> <span class="c1">// prints 'I need to feed at least 2 times a day'</span>
-<span class="nx">drac</span><span class="p">.</span><span class="nx">regenerate</span><span class="p">();</span> <span class="c1">// prints 15</span>
-<span class="nx">drac</span><span class="p">.</span><span class="nx">intimidate</span><span class="p">();</span> <span class="c1">// 'I am thirsty...you should run' 'too late...'</span>
-<span class="nx">drac</span><span class="p">.</span><span class="nx">complain</span><span class="p">();</span> <span class="c1">// WOMP this throws 'Error: attempting to access unimplemented interface property preferredMeal.'</span>
-<span class="nx">drac</span><span class="p">.</span><span class="nx">death_year</span> <span class="o">=</span> <span class="s1">'1991'</span><span class="p">;</span> <span class="c1">// WOMP this throws Error: attempting to set interface property death_year with incorrect type</span>
-<span class="nx">drac</span><span class="p">.</span><span class="nx">death_year</span> <span class="o">=</span> <span class="mi">1991</span><span class="p">;</span><span class="c1">// sets the value like normal</span>
-<span class="nx">drac</span><span class="p">.</span><span class="nx">resurrect</span><span class="p">();</span> <span class="c1">// no error as resurrect() was explicitely implemented</span>
+<span class="c1">//Zombie Class----------------------------- </span>
+<span class="nx">Monsters</span><span class="p">.</span><span class="nx">TheUndead</span><span class="p">.</span><span class="nx">Zombie</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="p">){</span>
+  <span class="k">this</span><span class="p">.</span><span class="kr">super</span><span class="p">([</span><span class="nx">name</span><span class="p">]);</span>
+<span class="p">}.</span><span class="kr">extends</span><span class="p">(</span><span class="nx">Monsters</span><span class="p">.</span><span class="nx">Base</span><span class="p">.</span><span class="nx">Monster</span><span class="p">).</span><span class="kr">implements</span><span class="p">(</span><span class="nx">Monsters</span><span class="p">.</span><span class="nx">Interfaces</span><span class="p">.</span><span class="nx">TheUndead</span><span class="p">);</span>
+
+<span class="nx">Monsters</span><span class="p">.</span><span class="nx">TheUndead</span><span class="p">.</span><span class="nx">Zombie</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">attack</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">character</span><span class="p">){</span>
+  <span class="k">if</span><span class="p">(</span><span class="nx">character</span><span class="p">.</span><span class="nx">instanceOf</span><span class="p">(</span><span class="nx">Monsters</span><span class="p">.</span><span class="nx">Base</span><span class="p">.</span><span class="nx">Monster</span><span class="p">)){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"I don't care that you are a monster..."</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'Slurp'</span><span class="p">);</span>
+  <span class="nx">character</span><span class="p">.</span><span class="nx">health</span> <span class="o">-=</span> <span class="mi">10</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">//FILE 4=======================================================================</span>
+
+<span class="kd">var</span> <span class="nx">vamp</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Monsters</span><span class="p">.</span><span class="nx">TheUndead</span><span class="p">.</span><span class="nx">Vampire</span><span class="p">(</span><span class="s1">'dracula'</span><span class="p">);</span> <span class="c1">//dracula checking in...</span>
+<span class="nx">zombie</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Monsters</span><span class="p">.</span><span class="nx">TheUndead</span><span class="p">.</span><span class="nx">Zombie</span><span class="p">(</span><span class="s1">'garth'</span><span class="p">);</span> <span class="c1">//garth checking in... </span>
+<span class="nx">newBorn</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Monsters</span><span class="p">.</span><span class="nx">TheUndead</span><span class="p">.</span><span class="nx">NewBornVampire</span><span class="p">(</span><span class="s1">'newby'</span><span class="p">);</span> <span class="c1">//newby checking in... </span>
+<span class="nx">human</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Monsters</span><span class="p">.</span><span class="nx">Base</span><span class="p">.</span><span class="nx">Hero</span><span class="p">(</span><span class="s1">'charlie'</span><span class="p">);</span> <span class="c1">//charlie checking in... </span>
+
+<span class="nx">vamp</span><span class="p">.</span><span class="nx">attack</span><span class="p">(</span><span class="nx">zombie</span><span class="p">);</span> <span class="c1">// I only eat heroes </span>
+<span class="nx">vamp</span><span class="p">.</span><span class="nx">attack</span><span class="p">(</span><span class="nx">human</span><span class="p">);</span> <span class="c1">// Chomp</span>
+
+<span class="nx">zombie</span><span class="p">.</span><span class="nx">attack</span><span class="p">(</span><span class="nx">vamp</span><span class="p">);</span> <span class="c1">// I don't care that you are a monster... Slurp</span>
+<span class="nx">zombie</span><span class="p">.</span><span class="nx">attack</span><span class="p">(</span><span class="nx">human</span><span class="p">);</span> <span class="c1">// Slurp</span>
+
+<span class="nx">newBorn</span><span class="p">.</span><span class="nx">attack</span><span class="p">(</span><span class="nx">human</span><span class="p">);</span> <span class="c1">// Chomp</span>
+<span class="nx">newBorn</span><span class="p">.</span><span class="nx">attack</span><span class="p">(</span><span class="nx">zombie</span><span class="p">);</span> <span class="c1">// I only eat heroes ***inherited from Vampire***</span>
+
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'human: '</span> <span class="o">+</span> <span class="nx">human</span><span class="p">.</span><span class="nx">health</span><span class="p">);</span> <span class="c1">// human: 30</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'vamp: '</span> <span class="o">+</span> <span class="nx">vamp</span><span class="p">.</span><span class="nx">health</span><span class="p">);</span> <span class="c1">// vamp: 90</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'zombie: '</span> <span class="o">+</span> <span class="nx">zombie</span><span class="p">.</span><span class="nx">health</span><span class="p">);</span> <span class="c1">// zombie: 100</span>
+
+<span class="nx">zombie</span><span class="p">.</span><span class="nx">arm</span><span class="p">(</span><span class="s1">'evil'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">value</span><span class="p">){</span>
+  <span class="k">if</span><span class="p">(</span><span class="nx">value</span> <span class="o">==</span> <span class="kc">false</span><span class="p">){</span>
+    <span class="nx">zombie</span> <span class="o">=</span> <span class="nx">zombie</span><span class="p">.</span><span class="nx">convert</span><span class="p">();</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="nx">zombie</span><span class="p">.</span><span class="nx">die</span><span class="p">();</span> <span class="c1">// Too late...</span>
+<span class="nx">newBorn</span><span class="p">.</span><span class="nx">die</span><span class="p">();</span> <span class="c1">// Too Late... ***inherits abstract method from Vampire implementing TheUndead***</span>
+
+<span class="nx">zombie</span><span class="p">.</span><span class="nx">evil</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span> <span class="c1">//garth checking in...</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">zombie</span><span class="p">.</span><span class="nx">instanceOf</span><span class="p">(</span><span class="nx">Monsters</span><span class="p">.</span><span class="nx">Base</span><span class="p">.</span><span class="nx">Monster</span><span class="p">));</span> <span class="c1">//false</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">zombie</span><span class="p">.</span><span class="nx">instanceOf</span><span class="p">(</span><span class="nx">Monsters</span><span class="p">.</span><span class="nx">Base</span><span class="p">.</span><span class="nx">Hero</span><span class="p">));</span> <span class="c1">//true</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">zombie</span><span class="p">.</span><span class="nx">instanceOf</span><span class="p">(</span><span class="nx">Monsters</span><span class="p">.</span><span class="nx">Base</span><span class="p">.</span><span class="nx">Character</span><span class="p">));</span> <span class="c1">//true</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">zombie</span><span class="p">.</span><span class="nx">evil</span><span class="p">);</span> <span class="c1">// false</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">zombie</span><span class="p">.</span><span class="nx">health</span><span class="p">);</span> <span class="c1">// 100</span>
+<span class="nx">vamp</span><span class="p">.</span><span class="nx">attack</span><span class="p">(</span><span class="nx">zombie</span><span class="p">);</span> <span class="c1">//Chomp</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">zombie</span><span class="p">.</span><span class="nx">health</span><span class="p">);</span> <span class="c1">// 80</span>
+
+<span class="nx">zombie</span><span class="p">.</span><span class="nx">cheesyLine</span><span class="p">();</span> <span class="c1">//lose the zero...get with the hero </span>
+<span class="nx">newBorn</span><span class="p">.</span><span class="nx">schedule</span><span class="p">();</span> <span class="c1">//prints 'I need to feed at least 2 times a day' then 'give or take 3 or 4 meals'</span>
+<span class="nx">newBorn</span><span class="p">.</span><span class="nx">resurrect</span><span class="p">();</span> <span class="c1">// throws Error: attempting to access unimplemented interface property resurrect. </span>
+
 </pre></div>
 
 <h2>
@@ -726,5 +824,4 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.</p></article>
-
 </body>
