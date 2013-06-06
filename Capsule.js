@@ -85,25 +85,28 @@ Object.defineProperty( Function.prototype, 'extends', {
 Object.defineProperty( Object.prototype, 'super', {
   value: function(funcName, args){
     var zuper = this.__proto__.__super__;
-    if(arguments.length == 1){
-      if(typeof funcName == 'object'){
+    if(typeof funcName != 'string'){
+      if(funcName instanceof Array || typeof funcName == 'undefined'){
         args = funcName;
-        if(!this.__protoCount__){
-          Object.defineProperty(this, '__protoCount__', {
-            value : 0,
-            writable : true,
-            enumerable : false
-          });
-        }
-        for(var i = 0; i < this.__protoCount__; i++){
-          zuper = zuper.prototype.__super__;
-        }
-        this.__protoCount__++;
-        if(zuper){
-          zuper.apply(this, args);
-        }
-        this.__protoCount__ = 0;
       }
+      else{
+        throw 'Error: Arguments to super() must be passed in an array.'
+      }
+      if(!this.__protoCount__){
+        Object.defineProperty(this, '__protoCount__', {
+          value : 0,
+          writable : true,
+          enumerable : false
+        });
+      }
+      for(var i = 0; i < this.__protoCount__; i++){
+        zuper = zuper.prototype.__super__;
+      }
+      this.__protoCount__++;
+      if(zuper){
+        zuper.apply(this, args);
+      }
+      this.__protoCount__ = 0;
       return;
     }
     if (zuper.prototype[funcName] == arguments.callee.caller){

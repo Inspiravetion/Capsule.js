@@ -39,6 +39,5 @@ console.log(zombie.health); // 100
 vamp.attack(zombie); //Chomp
 console.log(zombie.health); // 80
 
-
-
+newBorn.schedule(); //prints 'I need to feed at least 2 times a day' then 'give or take 3 or 4 meals'
 
