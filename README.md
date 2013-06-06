@@ -255,7 +255,7 @@ Allows you to provide a handler for the event emitted when a reactive property i
   });
   
   reactor.bomb; //'unstable'
-  reactor.bomb = 'about to explode...'; // prints { bomb : 'unstable' } then 'about to explode...'
+  reactor.bomb = 'about to explode...'; // prints { bomb : 'about to explode...' } then 'about to explode...'
 ```
 * Parameters :
   * ```propStr``` : The string name of the target reactive property
