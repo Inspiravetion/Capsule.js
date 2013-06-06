@@ -1,9 +1,11 @@
 
-//FILE 2
+//FILE 2=======================================================================
 namespace('Monsters.Interfaces');
 
+//TheUndead Interface------------
 Monsters.Interfaces.TheUndead = {
-  attack : 'function',
+  attack    : 'function',
+  resurrect : 'function',
   abstract : {
   	die : function(){
   		console.log('Too late...');

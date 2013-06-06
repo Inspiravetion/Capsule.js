@@ -1,5 +1,6 @@
 
-//FILE 5
+//FILE 5=======================================================================
+
 var vamp = new Monsters.TheUndead.Vampire('dracula'); //dracula checking in...
 zombie = new Monsters.TheUndead.Zombie('garth'); //garth checking in... 
 newBorn = new Monsters.TheUndead.NewBornVampire('newby'); //newby checking in... 
@@ -15,9 +16,9 @@ newBorn.attack(human); // Chomp
 newBorn.attack(zombie); // I only eat heroes ***inherited from Vampire***
 
 
-console.log('human: ' + human.health); // 30
-console.log('vamp: ' + vamp.health); // 90
-console.log('zombie: ' + zombie.health); //100
+console.log('human: ' + human.health); // human: 30
+console.log('vamp: ' + vamp.health); // vamp: 90
+console.log('zombie: ' + zombie.health); // zombie: 100
 
 zombie.arm('evil', function(value){
 	if(value == false){
@@ -39,5 +40,6 @@ console.log(zombie.health); // 100
 vamp.attack(zombie); //Chomp
 console.log(zombie.health); // 80
 
+zombie.cheesyLine(); //lose the zero...get with the hero 
 newBorn.schedule(); //prints 'I need to feed at least 2 times a day' then 'give or take 3 or 4 meals'
-
+newBorn.resurrect(); // throws Error: attempting to access unimplemented interface property resurrect. 
