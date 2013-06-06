@@ -1,3 +1,13 @@
+/*h1:before{
+  content: "";
+  position:absolute;
+  height: 30px;
+  width: 5px;
+  box-shadow: -5px 0px 9px #ffcccc;
+  top: 16px;
+  left: 2px;
+}*/
+
 .Capsule{
   width : 100px;
   height : 200px;
