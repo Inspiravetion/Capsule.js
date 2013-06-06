@@ -101,6 +101,9 @@ If ```funcName``` is present, then the the SuperClass's function given by ```fun
   var Monster = function(diet, homeland){
     this.diet = diet;
     this.homeland = homeland;
+    this.intimidate = function(intim){ //can only be overwritten in SubClass's Constructor
+    	console.log(intim);
+    };
   }
   
   Monster.prototype.hunt = function(beginning, end){
@@ -109,6 +112,9 @@ If ```funcName``` is present, then the the SuperClass's function given by ```fun
 
   var Vampire = function(){
     this.super(['blood', 'transylvania']);  
+    this.intimidate = function(){     // defined AFTER super() call
+    	this.super('intimidate', ['You look tasty']);	
+    };
   }.extends(Monster);
   
   Vampire.prototype.hunt = function(){
@@ -120,12 +126,17 @@ If ```funcName``` is present, then the the SuperClass's function given by ```fun
   dracula.diet; //blood
   dracula.homeland; //transylvania
   dracula.hunt(); // prints 'I am going hunting from dusk to dawn' then "The sun doesn't agree with me"
+  dracula.intimidate(); //prints 'You look tasty'
 ```
 * Parameters :
  * ```funcName``` (optional): the String name of the SuperClass's function to be called
  * ```argArray``` (optional): the arguments to pass to either the SuperClass constructor or one of its functions
 * Caveats : 
-  * funcName must be a function on the prototype of the SuperClass
+  * ```funcName``` may be a function on the prototype of the SuperClass or an instance method of the SuperClass BUT if it is an
+instance method, than the functional super() may only be called by a SubClass's instance method AFTER the normal super() has
+been called. 
+  * Calling functional super from an instance method involves more overhead and is therefore less efficient than having
+that function on the prototype.
 
 ###implements(interfaceObj)
 Adds each property of the ```interfaceObj``` to an Objects prototype. If any of the properties that are not in the 'abstract' object
@@ -161,7 +172,7 @@ optional 'abstract' portion defines properties to be directly added to the proto
 include ```'undefined'```, ```'object'```, ```'boolean'```, ```'number'```, ```'string'```, or ```'function'```.
 * Caveats : 
   * Throws errors at runtime if a property is accessed that hasnt been implemented. This is the point however. 
-  * The 'this' keyword must be used to access a property of ```interfaceObject``` from within a function that is defined in the 'abstract' portion.
+  * ```this``` must be used to access a property of ```interfaceObject``` from within a function that is defined in the 'abstract' portion.
 
 ###instanceOf(class)
 Returns true if the caller is a subclass of ```class```. Can be used with native classes or user defined classes.
