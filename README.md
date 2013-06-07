@@ -85,7 +85,7 @@ Extends a class to have all the functionality of ```superClass```.
   }.extends(Monster);
   
   var dracula = new Vampire();
-  dracula instanceof Monster // true
+  dracula.instanceOf(Monster) // true
 ```
 * Parameters :
  * ```superClass``` : The constructor function of the SuperClass
