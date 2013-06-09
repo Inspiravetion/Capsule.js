@@ -195,17 +195,16 @@ Returns true if the caller is a subclass of ```class```. Can be used with native
   * You should note that the ```instanceof``` opperator will not return the right value for extended classes. However 
 ```instanceOf()``` will work for both extended classes and built in types.
 
-###reactive(propStr, value, singleton)
+###reactive(propStr, value, oldSingleton, newSingleton)
 Creates a reactive property on the caller initialized to ```value```. The property will then emit an event any time it is changed.
-if ```singleton``` is true, all of the callbacks will recieve the same copy of the new value. If it is false, they will all 
-recieve their own copy of the new value.
+if ```oldSingleton``` / ```newSingleton``` is true, all of the callbacks will recieve the same copy of the old value / new value. If it is false, they will all recieve their own copy.
 
 ```javascript
   var Reactor = function(singleton){
     this.reactive('bomb', 'unstable');
     this.reactive('dud', {
       changMe : 1
-    }, singleton);
+    }, false, singleton);
   }
 
   var kaboom = function(value){
@@ -216,13 +215,15 @@ recieve their own copy of the new value.
     console.log('Fizzz');
   };
 
-  var fiz = function(value){
-    value.fizzle = 'fiz';
+  var fiz = function(oldValue, newValue){
+    oldValue.fizzle = 'fiz';
+    newValue.fizzle = 'fiz';
   }
 
-  var zle = function(value){
-    value.fizzle += 'zle';
-    console.log(value);
+  var zle = function(oldValue, newValue){
+    newValue.fizzle += 'zle';
+    console.log(oldValue);
+    console.log(newValue);
   }
 
   var reactor = new Reactor(),
@@ -241,15 +242,17 @@ recieve their own copy of the new value.
   reactor.dud = {}; // causes callback to be called...prints 'Fizzz'
 
   sharedReactor.dud = {}; // causes fiz() and zle() to be called passing them a singleton
-                          // prints { fizzle : 'fizzle' }
+                          // prints { changeMe : 1 } then { fizzle : 'fizzle' }
 ```
 * Parameters : 
   * ```propStr``` : The name of the property being added
   * ```value``` : The value of the property being added
-  * ```singleton``` : A boolean signifying if all callbacks should get the same copy of the new value that the reactive property
+  * ```oldSingleton``` : A boolean signifying if all callbacks should get the same copy of the old value of the reactive property.Defaults to false (each gets its own copy).
+  * ```newSingleton``` : A boolean signifying if all callbacks should get the same copy of the new value that the reactive property
 is changed to or if they should all get their own copies. Defaults to false (each gets its own copy).
 * Caveats : Only emits event when actual property is changed (changing ```reactiveObject.property``` will not emit events to listeners listening
 on ```reactiveObject```)
+* If ```oldSingleton``` or ```newSingleton``` are false it causes extra overhead to give fresh copies to registered callbacks
 
 ###arm(propStr, callback, context)
 Allows you to provide a handler for the event emitted when a reactive property is changed.
@@ -628,8 +631,10 @@ console.log('human: ' + human.health); // human: 30
 console.log('vamp: ' + vamp.health); // vamp: 90
 console.log('zombie: ' + zombie.health); // zombie: 100
 
-zombie.arm('evil', function(value){
-  if(value == false){
+zombie.arm('evil', function(oldVal, newVal){
+  console.log('oldval:' + oldVal); // oldval: true
+  console.log('newval:' + newVal); // newval: false
+  if(newVal == false){
     zombie = zombie.convert();
   }
 });
