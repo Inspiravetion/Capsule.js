@@ -280,10 +280,10 @@ if <code>singleton</code> is true, all of the callbacks will recieve the same co
 recieve their own copy of the new value.</p>
 
 <div class="highlight"><pre>  <span class="kd">var</span> <span class="nx">Reactor</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">singleton</span><span class="p">){</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">reactive</span><span class="p">(</span><span class="s1">'bomb'</span><span class="p">,</span> <span class="s1">'unstable'</span><span class="p">,</span> <span class="nx">singleton</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">reactive</span><span class="p">(</span><span class="s1">'bomb'</span><span class="p">,</span> <span class="s1">'unstable'</span><span class="p">);</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">reactive</span><span class="p">(</span><span class="s1">'dud'</span><span class="p">,</span> <span class="p">{</span>
       <span class="nx">changMe</span> <span class="o">:</span> <span class="mi">1</span>
-    <span class="p">});</span>
+    <span class="p">},</span> <span class="nx">singleton</span><span class="p">);</span>
   <span class="p">}</span>
 
   <span class="kd">var</span> <span class="nx">kaboom</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">value</span><span class="p">){</span>
@@ -625,13 +625,17 @@ a prototype then it must be passed in as <code>other</code>.</li>
     <span class="k">this</span><span class="p">.</span><span class="nx">age</span>  <span class="o">=</span> <span class="s1">'212'</span><span class="p">;</span>
   <span class="p">}</span>
 
+  <span class="nx">Monster</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">attack</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){};</span>
+
   <span class="kd">var</span> <span class="nx">Vampire</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
     <span class="k">this</span><span class="p">.</span><span class="kr">super</span><span class="p">();</span>
   <span class="p">}.</span><span class="kr">extends</span><span class="p">(</span><span class="nx">Monster</span><span class="p">);</span>
 
   <span class="kd">var</span> <span class="nx">vamp</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Vampire</span><span class="p">();</span>
-  <span class="nx">vamp</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span><span class="s1">'name'</span><span class="p">);</span> <span class="c1">//false</span>
+  <span class="nx">vamp</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span><span class="s1">'name'</span><span class="p">);</span> <span class="c1">//true</span>
+  <span class="nx">vamp</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span><span class="s1">'attack'</span><span class="p">);</span> <span class="c1">//false</span>
   <span class="nx">vamp</span><span class="p">.</span><span class="nx">hasProperty</span><span class="p">(</span><span class="s1">'name'</span><span class="p">);</span> <span class="c1">//true</span>
+  <span class="nx">vamp</span><span class="p">.</span><span class="nx">hasProperty</span><span class="p">(</span><span class="s1">'attack'</span><span class="p">);</span> <span class="c1">//true</span>
 </pre></div>
 
 <ul>
