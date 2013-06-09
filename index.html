@@ -1,6 +1,17 @@
 <!DOCTYPE html>
 <head>
   <link rel="stylesheet" type="text/css" href="github.css">
+  <script type="text/javascript">
+    window.onload = function(){
+      var arr = document.getElementsByClassName('nx');
+      for(var i = 0; i < arr.length; i++){
+        if(arr[i].innerText == 'prototype'){
+          arr[i].style.fontWeight = 'bold';
+          arr[i].style.color = '#ff3983';
+        }
+      }      
+    }
+  </script>
 </head>
 <body style='width:1000px;margin: 0 auto;'>
 <article class="markdown-body entry-content" itemprop="mainContentOfPage"><h1>
