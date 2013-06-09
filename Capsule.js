@@ -48,12 +48,7 @@ Object.defineProperty( Object.prototype, 'projectOnto', {
     var newProp, filter, mutate;
     opt = opt || {};
     filter = opt.filter || (function(){ return true });
-    mutate = opt.mutator || (function(d){ 
-      if(typeof d == 'object'){
-        return d.clone();
-      }
-      return d;
-    });
+    mutate = opt.mutator || (function(d){ return d.clone() });
     for(p in this){
       if(filter.call(this, p)){
         to[p] = mutate(this[p]);  
