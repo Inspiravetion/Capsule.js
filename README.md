@@ -85,7 +85,7 @@ Extends a class to have all the functionality of ```superClass```.
   }.extends(Monster);
   
   var dracula = new Vampire();
-  dracula instanceof Monster // true
+  dracula.instanceOf(Monster) // true
 ```
 * Parameters :
  * ```superClass``` : The constructor function of the SuperClass
@@ -202,10 +202,10 @@ recieve their own copy of the new value.
 
 ```javascript
   var Reactor = function(singleton){
-    this.reactive('bomb', 'unstable', singleton);
+    this.reactive('bomb', 'unstable');
     this.reactive('dud', {
       changMe : 1
-    });
+    }, singleton);
   }
 
   var kaboom = function(value){
@@ -475,13 +475,17 @@ Similar to ```hasOwnProperty()``` except that it searches the whole prototype ch
     this.age  = '212';
   }
   
+  Monster.prototype.attack = function(){};
+  
   var Vampire = function(){
     this.super();
   }.extends(Monster);
   
   var vamp = new Vampire();
-  vamp.hasOwnProperty('name'); //false
+  vamp.hasOwnProperty('name'); //true
+  vamp.hasOwnProperty('attack'); //false
   vamp.hasProperty('name'); //true
+  vamp.hasProperty('attack'); //true
 ```
 * Parameters : 
   * ```property``` : The String property to test for. 
