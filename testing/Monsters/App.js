@@ -20,8 +20,10 @@ console.log('human: ' + human.health); // human: 30
 console.log('vamp: ' + vamp.health); // vamp: 90
 console.log('zombie: ' + zombie.health); // zombie: 100
 
-zombie.arm('evil', function(value){
-	if(value == false){
+zombie.arm('evil', function(oldVal, newVal){
+	console.log('oldval:' + oldVal); // oldval: true
+	console.log('newval:' + newVal); // newval: false
+	if(newVal == false){
 		zombie = zombie.convert();
 	}
 });

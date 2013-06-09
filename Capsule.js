@@ -218,19 +218,21 @@ Object.defineProperty( Object.prototype, 'clone', {
 });
 
 Object.defineProperty(Object.prototype, 'reactive', { 
-  value : function(prop, initVal, singleton){                    
+  value : function(prop, initVal, oldCpy, newCpy){                    
     var self = this,
     secret = { val : initVal };
     self.__reactiveListeners__[prop] = self.__reactiveListeners__[prop] || [];
     Object.defineProperty(self, prop, {
       set : function(newVal){
-        this.val = newVal;
         var events = self.__reactiveListeners__[prop],
+        oldval = this.val,
         copy = newVal.clone();
+        this.val = newVal;
         for(var i = 0; i < events.length; i++){
           events[i].handler.call(
             events[i].context,
-            (singleton ? copy : newVal.clone()) 
+            (oldCpy ? oldval : oldval.clone()),
+            (newCpy ? copy : newVal.clone()) 
           );
         }
       }.bind(secret),
