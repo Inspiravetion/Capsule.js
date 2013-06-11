@@ -25,7 +25,12 @@ Simply import Capsule.js via a ```<script/>``` tag before any code that uses its
 ```
 
 ###Node:
-W.I.P.
+Make sure to require Capsule.js before the first use of its API. You only need to require it once and you dont need to catch
+it as a variable.
+
+```javascript
+require('./path/to/Capsule.js'); 
+```
 
 ###namespace(nameSpaceStr)
 Verifies that the given namespace exists in the global scope and if it doesn't, creates it. Allows you to logically
