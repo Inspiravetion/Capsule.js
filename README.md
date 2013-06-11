@@ -13,6 +13,19 @@ about prototype pollution, all (API) properties added to Object are NON-ENUMERAB
 corrupted. Along with the API bits that deal with inheritance and code reuse I also implemented reactive variables so that
 you can have handlers called whenever a specific property of an object is changed .Also did I mention it's less than 8kb?
 
+Usage
+-----
+
+###Browser
+Simply import Capsule.js via a ```<script/>``` tag before any code that uses its API.
+
+```html
+<script type="text/javascript" src='path/to/Capsule.js'></script>
+```
+
+###Node
+W.I.P.
+
 API
 ---
 
