@@ -11,7 +11,7 @@ a wrapper around the whole process. The point of this library is to make traditi
 Objects so that you can code with intuitive syntax and have it work how you would expect. And for those of you worried 
 about prototype pollution, all (API) properties added to Object are NON-ENUMERABLE...so 'for (prop in obj)' will not be 
 corrupted. Along with the API bits that deal with inheritance and code reuse I also implemented reactive variables so that
-you can have handlers called whenever a specific property of an object is changed .Also did I mention it's less than 8kb?
+you can have handlers called whenever a specific property of an object is changed .Also did I mention it's less than 8kb (un-minified)?
 
 Usage
 -----
