@@ -28,10 +28,28 @@ a wrapper around the whole process. The point of this library is to make traditi
 Objects so that you can code with intuitive syntax and have it work how you would expect. And for those of you worried 
 about prototype pollution, all (API) properties added to Object are NON-ENUMERABLE...so 'for (prop in obj)' will not be 
 corrupted. Along with the API bits that deal with inheritance and code reuse I also implemented reactive variables so that
-you can have handlers called whenever a specific property of an object is changed .Also did I mention it's less than 8kb?</p>
+you can have handlers called whenever a specific property of an object is changed .Also did I mention it's less than 8kb (un-minified)?</p>
 
 <h2>
-<a name="api" class="anchor" href="#api"><span class="octicon octicon-link"></span></a>API</h2>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<h3>
+<a name="browser" class="anchor" href="#browser"><span class="octicon octicon-link"></span></a>Browser:</h3>
+
+<p>Simply import Capsule.js via a <code>&lt;script/&gt;</code> tag before any code that uses its API.</p>
+
+<div class="highlight"><pre><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span> <span class="na">src=</span><span class="s">'path/to/Capsule.js'</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span> <span class="na">src=</span><span class="s">'path/to/MyApp.js'</span><span class="nt">&gt;&lt;/script&gt;</span>
+</pre></div>
+
+<h3>
+<a name="node" class="anchor" href="#node"><span class="octicon octicon-link"></span></a>Node:</h3>
+
+<p>Make sure to require Capsule.js before the first use of its API. You only need to require it once and you dont need to catch
+it as a variable.</p>
+
+<div class="highlight"><pre><span class="nx">require</span><span class="p">(</span><span class="s1">'./path/to/Capsule.js'</span><span class="p">);</span> 
+</pre></div>
 
 <h3>
 <a name="namespacenamespacestr" class="anchor" href="#namespacenamespacestr"><span class="octicon octicon-link"></span></a>namespace(nameSpaceStr)</h3>
@@ -114,7 +132,7 @@ organize the code in an app as well as avoid naming collisions.</p>
   <span class="p">}.</span><span class="kr">extends</span><span class="p">(</span><span class="nx">Monster</span><span class="p">);</span>
 
   <span class="kd">var</span> <span class="nx">dracula</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Vampire</span><span class="p">();</span>
-  <span class="nx">dracula</span><span class="p">.</span><span class="nx">instanceOf</span><span class="p">(</span><span class="nx">Monster</span><span class="p">)</span><span class="c1">// true</span>
+  <span class="nx">dracula</span><span class="p">.</span><span class="nx">instanceOf</span><span class="p">(</span><span class="nx">Monster</span><span class="p">)</span> <span class="c1">// true</span>
 </pre></div>
 
 <ul>
@@ -273,17 +291,16 @@ include <code>'undefined'</code>, <code>'object'</code>, <code>'boolean'</code>,
 </ul>
 </li>
 </ul><h3>
-<a name="reactivepropstr-value-singleton" class="anchor" href="#reactivepropstr-value-singleton"><span class="octicon octicon-link"></span></a>reactive(propStr, value, singleton)</h3>
+<a name="reactivepropstr-value-oldsingleton-newsingleton" class="anchor" href="#reactivepropstr-value-oldsingleton-newsingleton"><span class="octicon octicon-link"></span></a>reactive(propStr, value, oldSingleton, newSingleton)</h3>
 
 <p>Creates a reactive property on the caller initialized to <code>value</code>. The property will then emit an event any time it is changed.
-if <code>singleton</code> is true, all of the callbacks will recieve the same copy of the new value. If it is false, they will all 
-recieve their own copy of the new value.</p>
+if <code>oldSingleton</code> / <code>newSingleton</code> is true, all of the callbacks will recieve the same copy of the old value / new value. If it is false, they will all recieve their own copy.</p>
 
 <div class="highlight"><pre>  <span class="kd">var</span> <span class="nx">Reactor</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">singleton</span><span class="p">){</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">reactive</span><span class="p">(</span><span class="s1">'bomb'</span><span class="p">,</span> <span class="s1">'unstable'</span><span class="p">);</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">reactive</span><span class="p">(</span><span class="s1">'dud'</span><span class="p">,</span> <span class="p">{</span>
       <span class="nx">changMe</span> <span class="o">:</span> <span class="mi">1</span>
-    <span class="p">},</span> <span class="nx">singleton</span><span class="p">);</span>
+    <span class="p">},</span> <span class="kc">false</span><span class="p">,</span> <span class="nx">singleton</span><span class="p">);</span>
   <span class="p">}</span>
 
   <span class="kd">var</span> <span class="nx">kaboom</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">value</span><span class="p">){</span>
@@ -294,13 +311,15 @@ recieve their own copy of the new value.</p>
     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'Fizzz'</span><span class="p">);</span>
   <span class="p">};</span>
 
-  <span class="kd">var</span> <span class="nx">fiz</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">value</span><span class="p">){</span>
-    <span class="nx">value</span><span class="p">.</span><span class="nx">fizzle</span> <span class="o">=</span> <span class="s1">'fiz'</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">fiz</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">oldValue</span><span class="p">,</span> <span class="nx">newValue</span><span class="p">){</span>
+    <span class="nx">oldValue</span><span class="p">.</span><span class="nx">fizzle</span> <span class="o">=</span> <span class="s1">'fiz'</span><span class="p">;</span>
+    <span class="nx">newValue</span><span class="p">.</span><span class="nx">fizzle</span> <span class="o">=</span> <span class="s1">'fiz'</span><span class="p">;</span>
   <span class="p">}</span>
 
-  <span class="kd">var</span> <span class="nx">zle</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">value</span><span class="p">){</span>
-    <span class="nx">value</span><span class="p">.</span><span class="nx">fizzle</span> <span class="o">+=</span> <span class="s1">'zle'</span><span class="p">;</span>
-    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">value</span><span class="p">);</span>
+  <span class="kd">var</span> <span class="nx">zle</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">oldValue</span><span class="p">,</span> <span class="nx">newValue</span><span class="p">){</span>
+    <span class="nx">newValue</span><span class="p">.</span><span class="nx">fizzle</span> <span class="o">+=</span> <span class="s1">'zle'</span><span class="p">;</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">oldValue</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">newValue</span><span class="p">);</span>
   <span class="p">}</span>
 
   <span class="kd">var</span> <span class="nx">reactor</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Reactor</span><span class="p">(),</span>
@@ -319,7 +338,7 @@ recieve their own copy of the new value.</p>
   <span class="nx">reactor</span><span class="p">.</span><span class="nx">dud</span> <span class="o">=</span> <span class="p">{};</span> <span class="c1">// causes callback to be called...prints 'Fizzz'</span>
 
   <span class="nx">sharedReactor</span><span class="p">.</span><span class="nx">dud</span> <span class="o">=</span> <span class="p">{};</span> <span class="c1">// causes fiz() and zle() to be called passing them a singleton</span>
-                          <span class="c1">// prints { fizzle : 'fizzle' }</span>
+                          <span class="c1">// prints { changeMe : 1 } then { fizzle : 'fizzle' }</span>
 </pre></div>
 
 <ul>
@@ -331,12 +350,15 @@ recieve their own copy of the new value.</p>
 <li>
 <code>value</code> : The value of the property being added</li>
 <li>
-<code>singleton</code> : A boolean signifying if all callbacks should get the same copy of the new value that the reactive property
+<code>oldSingleton</code> : A boolean signifying if all callbacks should get the same copy of the old value of the reactive property.Defaults to false (each gets its own copy).</li>
+<li>
+<code>newSingleton</code> : A boolean signifying if all callbacks should get the same copy of the new value that the reactive property
 is changed to or if they should all get their own copies. Defaults to false (each gets its own copy).</li>
 </ul>
 </li>
 <li>Caveats : Only emits event when actual property is changed (changing <code>reactiveObject.property</code> will not emit events to listeners listening
 on <code>reactiveObject</code>)</li>
+<li>If <code>oldSingleton</code> or <code>newSingleton</code> are false it causes extra overhead to give fresh copies to registered callbacks</li>
 </ul><h3>
 <a name="armpropstr-callback-context" class="anchor" href="#armpropstr-callback-context"><span class="octicon octicon-link"></span></a>arm(propStr, callback, context)</h3>
 
@@ -601,9 +623,9 @@ in <code>consume()</code> to differentiate between a string or function or any o
 <li>
 <code>other</code> : The other object to copy properties to</li>
 <li>
-<code>options</code> (optional): An object containing up to two functions (<code>filter</code> and <code>mutator</code>). The filter function will be called with the value
-of each property and should return true for all properties that should be projected onto<code>other</code>. The mutator function will be
-passed the value of all the properties that have passed the filter test, it should return the value to be set on<code>other</code> for the 
+<code>options</code> (optional): An object containing up to two functions (<code>filter</code> and <code>mutator``). The filter function will be called with the value
+of each property and should return true for all properties that should be projected onto</code>other<code>. The mutator function will be
+passed the value of all the properties that have passed the filter test, it should return the value to be set on</code>other``` for the 
 property being considered. If filter is ommitted all properties will be copied. If mutator is ommitted, values will not be changed
 before they are set.</li>
 </ul>
@@ -789,8 +811,10 @@ Superclass's values.</li>
 <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'vamp: '</span> <span class="o">+</span> <span class="nx">vamp</span><span class="p">.</span><span class="nx">health</span><span class="p">);</span> <span class="c1">// vamp: 90</span>
 <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'zombie: '</span> <span class="o">+</span> <span class="nx">zombie</span><span class="p">.</span><span class="nx">health</span><span class="p">);</span> <span class="c1">// zombie: 100</span>
 
-<span class="nx">zombie</span><span class="p">.</span><span class="nx">arm</span><span class="p">(</span><span class="s1">'evil'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">value</span><span class="p">){</span>
-  <span class="k">if</span><span class="p">(</span><span class="nx">value</span> <span class="o">==</span> <span class="kc">false</span><span class="p">){</span>
+<span class="nx">zombie</span><span class="p">.</span><span class="nx">arm</span><span class="p">(</span><span class="s1">'evil'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">oldVal</span><span class="p">,</span> <span class="nx">newVal</span><span class="p">){</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'oldval:'</span> <span class="o">+</span> <span class="nx">oldVal</span><span class="p">);</span> <span class="c1">// oldval: true</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'newval:'</span> <span class="o">+</span> <span class="nx">newVal</span><span class="p">);</span> <span class="c1">// newval: false</span>
+  <span class="k">if</span><span class="p">(</span><span class="nx">newVal</span> <span class="o">==</span> <span class="kc">false</span><span class="p">){</span>
     <span class="nx">zombie</span> <span class="o">=</span> <span class="nx">zombie</span><span class="p">.</span><span class="nx">convert</span><span class="p">();</span>
   <span class="p">}</span>
 <span class="p">});</span>
