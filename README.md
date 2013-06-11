@@ -32,6 +32,9 @@ it as a variable.
 require('./path/to/Capsule.js'); 
 ```
 
+API
+---
+
 ###namespace(nameSpaceStr)
 Verifies that the given namespace exists in the global scope and if it doesn't, creates it. Allows you to logically
 organize the code in an app as well as avoid naming collisions.
