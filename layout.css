@@ -1,0 +1,104 @@
+@font-face {
+  font-family: subset-code;
+  font-style: regular;
+  src: url('fonts/SourceCodePro-Bold.ttf');
+}
+
+html, head, body, div{
+	padding: 0;
+	margin: 0;
+	border:0;
+}
+
+h1{
+    font-family: subset-code;
+	display: inline-block;
+    font-weight: bold;
+    /*margin: 1em 0 15px;*/
+    padding: 0;
+    font-weight: bold;
+    -webkit-font-smoothing: antialiased;
+    cursor: text;
+    position: relative;
+    font-size: 5em;
+    text-shadow: 0px 0px 5px #ccffcc;
+}
+
+.header{
+	margin: auto auto;
+	height: 150px;
+	width: 500px; /*make this more specific later*/
+	background-color: #fff;
+	padding: 5px;
+
+}
+
+.content-wrapper{
+	margin: auto auto;
+	height: 600px;
+	width: 1200px;
+	background-color: #0f0;
+	border-radius: 10px;
+}
+
+.content-wrapper div{
+	display: inline-block;
+}
+
+.menu{
+	width: 19.6%;
+	height: inherit;
+	background-color: #ccc;
+	border-top-left-radius: inherit;
+	border-bottom-left-radius: inherit;
+}
+
+.content{
+	height: inherit;
+	width: 80%;
+	background-color: #0f0;
+	border-top-right-radius: 10px;
+	border-bottom-right-radius: 10px;
+}
+
+/*CAPSULE IMAGE*/
+
+.Capsule{
+  width : 75px;
+  height : 150px;
+  background-color : #000;
+  border-radius: 37px;
+  position : relative;
+  box-shadow : 0px 0px 30px #00c290;
+  display: inline-block;
+}
+
+.Capsule:hover{
+    box-shadow : 0px 0px 30px #0ff;
+}
+
+.Capsule:after{
+  content : "";
+  width : 75px;
+  height: 10px;
+  background-color : #000;
+  position : absolute;
+  top : 60px;
+  border-style : solid;
+  border-width: 5px 0px;
+  border-color: #00c290;
+}
+
+.Capsule:hover:after{
+  border-color: #0ff;
+}
+
+.Capsule span{
+  position : absolute;
+  background-color: #666;
+  width: 37px;
+  height: 37px;
+  top: 10px;
+  left: 30px;
+  border-radius: 20px 50px;
+}
