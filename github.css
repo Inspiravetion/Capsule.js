@@ -3069,13 +3069,13 @@ line.axis.even {
     color: #009999;
 }
 .highlight .s {
-    color: #d14;
+    color: #00c290;/*Charlie Lipford*/
 }
 .highlight .n {
     color: #333333;
 }
 .highlight .na {
-    color: #008080;
+    color: ##ff3983;/*Charlie Lipford*/
 }
 .highlight .nb {
     color: #ff3983; /*Charlie Lipford*/
@@ -3102,7 +3102,7 @@ line.axis.even {
     color: #555555;
 }
 .highlight .nt {
-    color: #000080;
+    color: ##ff9561;/*Charlie Lipford*/
 }
 .highlight .nv {
     color: #008080;
