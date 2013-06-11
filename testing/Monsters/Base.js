@@ -13,7 +13,9 @@ Monsters.Base.Character = function(name, evil){
 }
 
 Monsters.Base.Character.prototype.greet = function(){
-  console.log(this.name + ' checking in...');
+  if(this.name){
+    console.log(this.name + ' checking in...');
+  }
 }
 
 //Monster Base Class

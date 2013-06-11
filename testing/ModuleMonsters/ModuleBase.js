@@ -12,7 +12,9 @@ Monsters.Base.Character = function(name, evil){
   };             
 
   this.greet = function(){
-    console.log(this.name + ' checking in...');
+    if(this.name){
+      console.log(this.name + ' checking in...');
+    }
   }
 
   this.greet();
