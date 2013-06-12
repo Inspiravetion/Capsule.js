@@ -1,0 +1,1 @@
+exports.TheUndead = require('./TheUndead.js');
