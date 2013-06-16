@@ -6,7 +6,7 @@ Monsters.TheUndead.Zombie = function(name){
 }.extends(Monsters.Base.Monster).implements(Monsters.Interfaces.TheUndead);
 
 Monsters.TheUndead.Zombie.prototype.attack = function(character){
-  if(character.instanceOf(Monsters.Base.Monster)){
+  if(character instanceof Monsters.Base.Monster){
     console.log("I don't care that you are a monster...");
   }
   console.log('Slurp');

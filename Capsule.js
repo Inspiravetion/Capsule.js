@@ -22,6 +22,40 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+(function(){
+
+//Helpers
+
+var matchesBuiltIn = function(instance, clazz){
+    switch(clazz){
+        case String:
+            if(typeof instance == 'string')
+                return true;
+            break;
+        case Number:
+            if(typeof instance == 'number')
+                return true;
+            break;
+        case Array:
+            if(instance instanceof Array)
+                return true;
+            break;
+        case RegExp:
+            if(instance instanceof RegExp)
+                return true;   
+            break;
+        case Date:
+            if(instance instanceof Date)
+                return true;
+            break;
+        case Object:
+            return true;
+    }
+    return false;
+}
+
+//API
+
 Object.defineProperty( Object.prototype, 'consume', { 
   value: function(other, mutate, global){
     var propExists;
@@ -122,24 +156,6 @@ Object.defineProperty( Object.prototype, 'super', {
   enumerable: false
 });
 
-Object.defineProperty( Object.prototype, 'instanceOf', {
-  value : function(superClass){
-    var zuper;
-    if(this instanceof superClass){
-      return true;
-    }
-    zuper = this.__super__;
-    while(zuper){
-      if(zuper == superClass){
-        return true;
-      }
-      zuper = zuper.prototype.__super__ || null;
-    }
-    return false;
-  },
-  enumerable : false
-});
-
 Object.defineProperty( Function.prototype, 'implements', { 
   value: function(nterface){
     for(property in nterface){
@@ -167,6 +183,32 @@ Object.defineProperty( Function.prototype, 'implements', {
     return this;
   },
   enumerable: false
+});
+
+Object.defineProperty( Function.prototype , 'overload', {
+  value : function(prop, fn, argTypes){
+    var other = this.prototype[prop] || null;
+      
+    this.prototype[prop] = function(){
+      for(var i = 0, l = argTypes ? argTypes.length : 0; i < l; i++){
+        if(l != arguments.length ||
+          (!(matchesBuiltIn(arguments[i], argTypes[i]) ||
+          arguments[i] instanceof argTypes[i]) && 
+          arguments[i])){
+          if(other){
+            return other.apply(this, arguments);
+          }
+          throw (fn.name + ' called with the wrong type of parameters.');
+        }
+      }
+      if(((!argTypes) || (argTypes.length == 0)) && 
+        (arguments.length != 0) && (!other)){
+        throw (prop + ' called with the wrong type of parameters.');
+      }
+      fn.apply(this, arguments);
+    }
+  },
+  enumerable : false
 });
 
 Object.defineProperty( Object.prototype, 'namespace', { 
@@ -273,3 +315,5 @@ Object.defineProperty(Object.prototype, '__reactiveListeners__', {
   value : {},
   enumerable : false
 });
+
+})()

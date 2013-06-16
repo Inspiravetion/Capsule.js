@@ -32,7 +32,7 @@ Monsters.TheUndead.Zombie = function(name){
   this.super([name]);
 
   this.attack = function(character){
-    if(character.instanceOf(Monsters.Base.Monster)){
+    if(character instanceof Monsters.Base.Monster){
       console.log("I don't care that you are a monster...");
     }
     console.log('Slurp');

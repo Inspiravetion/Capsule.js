@@ -35,9 +35,9 @@ newBorn.die(); // Too Late... ***inherits abstract method from Vampire implement
 
 zombie.evil = false; //garth checking in...
 
-console.log(zombie.instanceOf(Base.Monster)); //false
-console.log(zombie.instanceOf(Base.Hero)); //true
-console.log(zombie.instanceOf(Base.Character)); //true
+console.log(zombie instanceof Base.Monster); //false
+console.log(zombie instanceof Base.Hero); //true
+console.log(zombie instanceof Base.Character); //true
 
 console.log(zombie.evil); // false
 console.log(zombie.health); // 100

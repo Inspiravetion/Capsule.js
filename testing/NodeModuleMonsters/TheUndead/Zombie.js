@@ -7,7 +7,7 @@ var Zombie = function(name){
 }.extends(Monster).implements(TheUndead);
 
 Zombie.prototype.attack = function(character){
-  if(character.instanceOf(Monster)){
+  if(character instanceof Monster){
     console.log("I don't care that you are a monster...");
   }
   console.log('Slurp');

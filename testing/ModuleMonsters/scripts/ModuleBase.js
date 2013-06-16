@@ -33,7 +33,7 @@ Monsters.Base.Monster = function(name){
   }
 
   this.attack = function(character, att, power){
-    if(character.instanceOf(Monsters.Base.Monster)){
+    if(character instanceof Monsters.Base.Monster){
       console.log('I only eat heroes');
       return;
     }

@@ -104,7 +104,7 @@ Extends a class to have all the functionality of ```superClass```.
   }.extends(Monster);
   
   var dracula = new Vampire();
-  dracula.instanceOf(Monster) // true
+  dracula instanceof Monster // true
 ```
 * Parameters :
  * ```superClass``` : The constructor function of the SuperClass
@@ -193,26 +193,71 @@ include ```'undefined'```, ```'object'```, ```'boolean'```, ```'number'```, ```'
   * Throws errors at runtime if a property is accessed that hasnt been implemented. This is the point however. 
   * ```this``` must be used to access a property of ```interfaceObject``` from within a function that is defined in the 'abstract' portion.
 
-###instanceOf(class)
-Returns true if the caller is a subclass of ```class```. Can be used with native classes or user defined classes.
+###overload(funcStr, implFunc, argTypeArr)
+Overloads a function on the callers prototype so that different implementations can be resolved at runtime based on the args passed in.
+
 ```javascript
+  var Hero = function(){};
+
   var Monster = function(){};
-  
+
+  Monster.prototype.growl = function(){ console.log('grrr') };
+
+  Monster.overload('attack', function(){
+      console.log('i take no params');
+  });
+
+  Monster.overload('attack', function(a){
+      console.log('I take a string');
+  }, [String]);
+
+  Monster.overload('attack', function(munster){
+      munster.growl();
+  }, [Monster]);
+
+  Monster.overload('attack', function(a){
+      console.log('I take a number');
+  }, [Number]);
+
+  Monster.overload('attack', function(a){
+      console.log('I take a number, a string, and a Hero');
+  }, [Number, String, Hero]);
+
   var Vampire = function(){
     this.super();
   }.extends(Monster);
-  
+
+  var NewBornVampire = function(){
+    this.super();
+  }.extends(Vampire);
+
+  var m = new Monster();
+  m.attack(); // i take no params
+  m.attack('dfgsdf'); // I take a string
+
   var vamp = new Vampire();
-  vamp instanceof Monster; //false
-  vamp.instanceOf(Monster); //true
-  
-  [].instanceOf(Array); //true
+  vamp.attack(1); // I take a number
+  vamp.attack(vamp); // grrr
+
+  var newvamp = new NewBornVampire();
+  newvamp.attack(2, 'sf', new Hero()); // I take a number, a string, and a Hero
+  newvamp.attack(2, null, new Hero()); // I take a number, a string, and a Hero
+  newvamp.attack(null); // I take a number
+  newvamp.attack({}); // throws 'attack called with the wrong type of parameters.'
 ```
 * Parameters :
-  * ```class``` : The constructor function of the presumed SuperClass to evaluate
-* Caveats : 
-  * You should note that the ```instanceof``` opperator will not return the right value for extended classes. However 
-```instanceOf()``` will work for both extended classes and built in types.
+  * ```funcStr``` : The string name of the function to overload.
+  * ```implFunc``` : The desired implementation to be called at runtime.
+  * ```argTypeArr``` : An Array of Class constructor functions that define what type of 
+arguments ```implFunc``` takes. Arguments passed into ```implFunc``` will be tested against 
+the contents of ```argTypeArr``` using ```instanceof```. If ```Object``` is contained in ```argTypeArr```,
+anything can be passed in for that parameter. ```null``` can also be passed in for any parameter.
+* Caveats :
+  * All versions of the overloaded function must be added using ```overload()```. Otherwise, the first implementation
+that doesn't will act as the default implementation. Additionally, any implementation defined before it will never be called.
+  * When passing in null, be aware that it masks the parameter type it is representing. Thus, the last function implementation
+whos signature matches the parameters being passed in (null acting as a 'wildcard'), will be the function that is called.
+  * Cannot be used within a class constructor ie. ```this.overload('somefunc', function(){}, [myObj])```.
 
 ###reactive(propStr, value, oldSingleton, newSingleton)
 Creates a reactive property on the caller initialized to ```value```. The property will then emit an event any time it is changed.
@@ -554,7 +599,7 @@ Monsters.Base.Monster.prototype.convert = function(){
 }
 
 Monsters.Base.Monster.prototype.attack = function(character, att, power){
-  if(character.instanceOf(Monsters.Base.Monster)){
+  if(character instanceof Monsters.Base.Monster){
     console.log('I only eat heroes');
     return;
   }
@@ -622,7 +667,7 @@ Monsters.TheUndead.Zombie = function(name){
 }.extends(Monsters.Base.Monster).implements(Monsters.Interfaces.TheUndead);
 
 Monsters.TheUndead.Zombie.prototype.attack = function(character){
-  if(character.instanceOf(Monsters.Base.Monster)){
+  if(character instanceof Monsters.Base.Monster){
     console.log("I don't care that you are a monster...");
   }
   console.log('Slurp');
@@ -663,9 +708,9 @@ newBorn.die(); // Too Late... ***inherits abstract method from Vampire implement
 
 zombie.evil = false; //garth checking in...
 
-console.log(zombie.instanceOf(Monsters.Base.Monster)); //false
-console.log(zombie.instanceOf(Monsters.Base.Hero)); //true
-console.log(zombie.instanceOf(Monsters.Base.Character)); //true
+console.log(zombie instanceof Monsters.Base.Monster); //false
+console.log(zombie instanceof Monsters.Base.Hero); //true
+console.log(zombie instanceof Monsters.Base.Character); //true
 
 console.log(zombie.evil); // false
 console.log(zombie.health); // 100

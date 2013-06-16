@@ -13,7 +13,7 @@ Monster.prototype.convert = function(){
 }
 
 Monster.prototype.attack = function(character, att, power){
-  if(character.instanceOf(Monster)){
+  if(character instanceof Monster){
     console.log('I only eat heroes');
     return;
   }
