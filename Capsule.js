@@ -198,11 +198,15 @@ Object.defineProperty( Function.prototype , 'overload', {
           if(other){
             return other.apply(this, arguments);
           }
-          throw (fn.name + ' called with the wrong type of parameters.');
+          throw (prop + ' called with the wrong type of parameters.');
         }
       }
       if(((!argTypes) || (argTypes.length == 0)) && 
-        (arguments.length != 0) && (!other)){
+        (arguments.length != 0)){
+        if(other){
+          other.apply(this, arguments);
+          return;
+        }
         throw (prop + ' called with the wrong type of parameters.');
       }
       fn.apply(this, arguments);

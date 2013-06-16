@@ -17,3 +17,6 @@ Monsters.Base.Character.prototype.greet = function(){
   }
 }
 
+Monsters.Base.Character.overload('regenerate', function(health){
+  this.health += health;
+}, [Number]);

@@ -25,6 +25,14 @@ console.log('human: ' + human.health); // human: 30
 console.log('vamp: ' + vamp.health); // vamp: 90
 console.log('zombie: ' + zombie.health); // zombie: 100
 
+vamp.regenerate(); // The blood is kicking in...
+console.log('vamp: ' + vamp.health); // vamp: 110
+
+zombie.regenerate(10);
+console.log('zombie: ' + zombie.health); // zombie: 110
+
+// zombie.regenerate(); // throws 'regenerate called with the wrong type of parameters.'
+
 zombie.arm('evil', function(oldVal, newVal){
   console.log('oldval:' + oldVal); // oldval: true
   console.log('newval:' + newVal); // newval: false

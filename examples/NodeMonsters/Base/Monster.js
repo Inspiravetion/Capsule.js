@@ -22,3 +22,8 @@ Monsters.Base.Monster.prototype.attack = function(character, att, power){
   character.health -= power;
 }
 
+Monsters.Base.Monster.overload('regenerate', function(message, health){
+	console.log(message);
+	this.regenerate(health);
+}, [String, Number]);
+
