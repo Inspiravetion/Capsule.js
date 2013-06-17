@@ -204,12 +204,11 @@ Object.defineProperty( Function.prototype , 'overload', {
       if(((!argTypes) || (argTypes.length == 0)) && 
         (arguments.length != 0)){
         if(other){
-          other.apply(this, arguments);
-          return;
+          return other.apply(this, arguments);
         }
         throw (prop + ' called with the wrong type of parameters.');
       }
-      fn.apply(this, arguments);
+      return fn.apply(this, arguments);
     }
   },
   enumerable : false
