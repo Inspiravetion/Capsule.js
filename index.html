@@ -28,9 +28,16 @@ a wrapper around the whole process. The point of this library is to make traditi
 Objects so that you can code with intuitive syntax and have it work how you would expect. And for those of you worried 
 about prototype pollution, all (API) properties added to Object are NON-ENUMERABLE...so 'for (prop in obj)' will not be 
 corrupted. Along with the API bits that deal with inheritance and code reuse I also implemented reactive variables so that
-you can have handlers called whenever a specific property of an object is changed .Also did I mention it's less than 8kb (un-minified)?</p>
+you can have handlers called whenever a specific property of an object is changed .Also did I mention it's less than 9kb un-minified and
+less than 5kb minified?</p>
 
 <h2>
+<a name="download" class="anchor" href="#download"><span class="octicon octicon-link"></span></a>Download</h2>
+
+<ul>
+<li><a href="https://raw.github.com/Inspiravetion/Capsule.js/master/Capsule-min.js">minified</a></li>
+<li><a href="https://raw.github.com/Inspiravetion/Capsule.js/master/Capsule.js">un-minified</a></li>
+</ul><h2>
 <a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
 
 <h3>
@@ -52,9 +59,22 @@ it as a variable.</p>
 </pre></div>
 
 <h2>
-<a name="usage" class="anchor" href="#api"><span class="octicon octicon-link"></span></a>API</h2>
+<a name="api" class="anchor" href="#api"><span class="octicon octicon-link"></span></a>API</h2>
 
-<h3>
+<ul>
+<li><a href="http://inspiravetion.github.io/Capsule.js#namespacenamespacestr">namespace</a></li>
+<li><a href="http://inspiravetion.github.io/Capsule.js#extendssuperclass">extends</a></li>
+<li><a href="http://inspiravetion.github.io/Capsule.js#superfuncname-argarray">super</a></li>
+<li><a href="http://inspiravetion.github.io/Capsule.js#implementsinterfaceobj">implements</a></li>
+<li><a href="http://inspiravetion.github.io/Capsule.js#overloadfuncstr-implfunc-argtypearr">overload</a></li>
+<li><a href="http://inspiravetion.github.io/Capsule.js#reactivepropstr-value-oldsingleton-newsingleton">reactive</a></li>
+<li><a href="http://inspiravetion.github.io/Capsule.js#armpropstr-callback-context">arm</a></li>
+<li><a href="http://inspiravetion.github.io/Capsule.js#disarmpropstr-callback-optcontext">disarm</a></li>
+<li><a href="http://inspiravetion.github.io/Capsule.js#clone">clone</a></li>
+<li><a href="http://inspiravetion.github.io/Capsule.js#consumeother-mutator-global">consume</a></li>
+<li><a href="http://inspiravetion.github.io/Capsule.js#projectontoother-options">projectOnto</a></li>
+<li><a href="http://inspiravetion.github.io/Capsule.js#haspropertyproperty">hasProperty</a></li>
+</ul><h3>
 <a name="namespacenamespacestr" class="anchor" href="#namespacenamespacestr"><span class="octicon octicon-link"></span></a>namespace(nameSpaceStr)</h3>
 
 <p>Verifies that the given namespace exists in the global scope and if it doesn't, creates it. Allows you to logically
@@ -135,7 +155,7 @@ organize the code in an app as well as avoid naming collisions.</p>
   <span class="p">}.</span><span class="kr">extends</span><span class="p">(</span><span class="nx">Monster</span><span class="p">);</span>
 
   <span class="kd">var</span> <span class="nx">dracula</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Vampire</span><span class="p">();</span>
-  <span class="nx">dracula</span><span class="p">.</span><span class="nx">instanceOf</span><span class="p">(</span><span class="nx">Monster</span><span class="p">)</span> <span class="c1">// true</span>
+  <span class="nx">dracula</span> <span class="k">instanceof</span> <span class="nx">Monster</span> <span class="c1">// true</span>
 </pre></div>
 
 <ul>
@@ -261,21 +281,57 @@ include <code>'undefined'</code>, <code>'object'</code>, <code>'boolean'</code>,
 </ul>
 </li>
 </ul><h3>
-<a name="instanceofclass" class="anchor" href="#instanceofclass"><span class="octicon octicon-link"></span></a>instanceOf(class)</h3>
+<a name="overloadfuncstr-implfunc-argtypearr" class="anchor" href="#overloadfuncstr-implfunc-argtypearr"><span class="octicon octicon-link"></span></a>overload(funcStr, implFunc, argTypeArr)</h3>
 
-<p>Returns true if the caller is a subclass of <code>class</code>. Can be used with native classes or user defined classes.</p>
+<p>Overloads a function on the callers prototype so that different implementations can be resolved at runtime based on the args passed in.</p>
 
-<div class="highlight"><pre>  <span class="kd">var</span> <span class="nx">Monster</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){};</span>
+<div class="highlight"><pre>  <span class="kd">var</span> <span class="nx">Hero</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){};</span>
+
+  <span class="kd">var</span> <span class="nx">Monster</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){};</span>
+
+  <span class="nx">Monster</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">growl</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'grrr'</span><span class="p">)</span> <span class="p">};</span>
+
+  <span class="nx">Monster</span><span class="p">.</span><span class="nx">overload</span><span class="p">(</span><span class="s1">'attack'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'i take no params'</span><span class="p">);</span>
+  <span class="p">});</span>
+
+  <span class="nx">Monster</span><span class="p">.</span><span class="nx">overload</span><span class="p">(</span><span class="s1">'attack'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">a</span><span class="p">){</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'I take a string'</span><span class="p">);</span>
+  <span class="p">},</span> <span class="p">[</span><span class="nb">String</span><span class="p">]);</span>
+
+  <span class="nx">Monster</span><span class="p">.</span><span class="nx">overload</span><span class="p">(</span><span class="s1">'attack'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">munster</span><span class="p">){</span>
+      <span class="nx">munster</span><span class="p">.</span><span class="nx">growl</span><span class="p">();</span>
+  <span class="p">},</span> <span class="p">[</span><span class="nx">Monster</span><span class="p">]);</span>
+
+  <span class="nx">Monster</span><span class="p">.</span><span class="nx">overload</span><span class="p">(</span><span class="s1">'attack'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">a</span><span class="p">){</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'I take a number'</span><span class="p">);</span>
+  <span class="p">},</span> <span class="p">[</span><span class="nb">Number</span><span class="p">]);</span>
+
+  <span class="nx">Monster</span><span class="p">.</span><span class="nx">overload</span><span class="p">(</span><span class="s1">'attack'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">a</span><span class="p">){</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'I take a number, a string, and a Hero'</span><span class="p">);</span>
+  <span class="p">},</span> <span class="p">[</span><span class="nb">Number</span><span class="p">,</span> <span class="nb">String</span><span class="p">,</span> <span class="nx">Hero</span><span class="p">]);</span>
 
   <span class="kd">var</span> <span class="nx">Vampire</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
     <span class="k">this</span><span class="p">.</span><span class="kr">super</span><span class="p">();</span>
   <span class="p">}.</span><span class="kr">extends</span><span class="p">(</span><span class="nx">Monster</span><span class="p">);</span>
 
-  <span class="kd">var</span> <span class="nx">vamp</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Vampire</span><span class="p">();</span>
-  <span class="nx">vamp</span> <span class="k">instanceof</span> <span class="nx">Monster</span><span class="p">;</span> <span class="c1">//false</span>
-  <span class="nx">vamp</span><span class="p">.</span><span class="nx">instanceOf</span><span class="p">(</span><span class="nx">Monster</span><span class="p">);</span> <span class="c1">//true</span>
+  <span class="kd">var</span> <span class="nx">NewBornVampire</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+    <span class="k">this</span><span class="p">.</span><span class="kr">super</span><span class="p">();</span>
+  <span class="p">}.</span><span class="kr">extends</span><span class="p">(</span><span class="nx">Vampire</span><span class="p">);</span>
 
-  <span class="p">[].</span><span class="nx">instanceOf</span><span class="p">(</span><span class="nb">Array</span><span class="p">);</span> <span class="c1">//true</span>
+  <span class="kd">var</span> <span class="nx">m</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Monster</span><span class="p">();</span>
+  <span class="nx">m</span><span class="p">.</span><span class="nx">attack</span><span class="p">();</span> <span class="c1">// i take no params</span>
+  <span class="nx">m</span><span class="p">.</span><span class="nx">attack</span><span class="p">(</span><span class="s1">'dfgsdf'</span><span class="p">);</span> <span class="c1">// I take a string</span>
+
+  <span class="kd">var</span> <span class="nx">vamp</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Vampire</span><span class="p">();</span>
+  <span class="nx">vamp</span><span class="p">.</span><span class="nx">attack</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span> <span class="c1">// I take a number</span>
+  <span class="nx">vamp</span><span class="p">.</span><span class="nx">attack</span><span class="p">(</span><span class="nx">vamp</span><span class="p">);</span> <span class="c1">// grrr</span>
+
+  <span class="kd">var</span> <span class="nx">newvamp</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">NewBornVampire</span><span class="p">();</span>
+  <span class="nx">newvamp</span><span class="p">.</span><span class="nx">attack</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s1">'sf'</span><span class="p">,</span> <span class="k">new</span> <span class="nx">Hero</span><span class="p">());</span> <span class="c1">// I take a number, a string, and a Hero</span>
+  <span class="nx">newvamp</span><span class="p">.</span><span class="nx">attack</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="kc">null</span><span class="p">,</span> <span class="k">new</span> <span class="nx">Hero</span><span class="p">());</span> <span class="c1">// I take a number, a string, and a Hero</span>
+  <span class="nx">newvamp</span><span class="p">.</span><span class="nx">attack</span><span class="p">(</span><span class="kc">null</span><span class="p">);</span> <span class="c1">// I take a number</span>
+  <span class="nx">newvamp</span><span class="p">.</span><span class="nx">attack</span><span class="p">({});</span> <span class="c1">// throws 'attack called with the wrong type of parameters.'</span>
 </pre></div>
 
 <ul>
@@ -283,14 +339,24 @@ include <code>'undefined'</code>, <code>'object'</code>, <code>'boolean'</code>,
 
 <ul>
 <li>
-<code>class</code> : The constructor function of the presumed SuperClass to evaluate</li>
+<code>funcStr</code> : The string name of the function to overload.</li>
+<li>
+<code>implFunc</code> : The desired implementation to be called at runtime.</li>
+<li>
+<code>argTypeArr</code> : An Array of Class constructor functions that define what type of 
+arguments <code>implFunc</code> takes. Arguments passed into <code>implFunc</code> will be tested against 
+the contents of <code>argTypeArr</code> using <code>instanceof</code>. If <code>Object</code> is contained in <code>argTypeArr</code>,
+anything can be passed in for that parameter. <code>null</code> can also be passed in for any parameter.</li>
 </ul>
 </li>
-<li>Caveats : 
+<li>Caveats :
 
 <ul>
-<li>You should note that the <code>instanceof</code> opperator will not return the right value for extended classes. However 
-<code>instanceOf()</code> will work for both extended classes and built in types.</li>
+<li>All versions of the overloaded function must be added using <code>overload()</code>. Otherwise, the first implementation
+that doesn't will act as the default implementation. Additionally, any implementation defined before it will never be called.</li>
+<li>When passing in null, be aware that it masks the parameter type it is representing. Thus, the last function implementation
+whos signature matches the parameters being passed in (null acting as a 'wildcard'), will be the function that is called.</li>
+<li>Cannot be used within a class constructor ie. <code>this.overload('somefunc', function(){}, [myObj])</code>.</li>
 </ul>
 </li>
 </ul><h3>
@@ -627,8 +693,8 @@ in <code>consume()</code> to differentiate between a string or function or any o
 <code>other</code> : The other object to copy properties to</li>
 <li>
 <code>options</code> (optional): An object containing up to two functions (<code>filter</code> and <code>mutator</code>). The filter function will be called with the value
-of each property and should return true for all properties that should be projected onto<code>other</code>. The mutator function will be
-passed the value of all the properties that have passed the filter test, it should return the value to be set on<code>other</code> for the 
+of each property and should return true for all properties that should be projected onto <code>other</code>. The mutator function will be
+passed the value of all the properties that have passed the filter test, it should return the value to be set on <code>other</code> for the 
 property being considered. If <code>filter</code> is ommitted all properties will be copied. If <code>mutator</code> is ommitted, values will not be changed
 before they are set.</li>
 </ul>
@@ -707,6 +773,10 @@ Superclass's values.</li>
   <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">name</span> <span class="o">+</span> <span class="s1">' checking in...'</span><span class="p">);</span>
 <span class="p">}</span>
 
+<span class="nx">Monsters</span><span class="p">.</span><span class="nx">Base</span><span class="p">.</span><span class="nx">Character</span><span class="p">.</span><span class="nx">overload</span><span class="p">(</span><span class="s1">'regenerate'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">health</span><span class="p">){</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">health</span> <span class="o">+=</span> <span class="nx">health</span><span class="p">;</span>
+<span class="p">},</span> <span class="p">[</span><span class="nb">Number</span><span class="p">]);</span>
+
 <span class="c1">//Monster Base Class-------------------</span>
 <span class="nx">Monsters</span><span class="p">.</span><span class="nx">Base</span><span class="p">.</span><span class="nx">Monster</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="p">){</span>
   <span class="k">this</span><span class="p">.</span><span class="kr">super</span><span class="p">([</span><span class="nx">name</span><span class="p">,</span> <span class="kc">true</span><span class="p">])</span>
@@ -718,13 +788,18 @@ Superclass's values.</li>
 <span class="p">}</span>
 
 <span class="nx">Monsters</span><span class="p">.</span><span class="nx">Base</span><span class="p">.</span><span class="nx">Monster</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">attack</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">character</span><span class="p">,</span> <span class="nx">att</span><span class="p">,</span> <span class="nx">power</span><span class="p">){</span>
-  <span class="k">if</span><span class="p">(</span><span class="nx">character</span><span class="p">.</span><span class="nx">instanceOf</span><span class="p">(</span><span class="nx">Monsters</span><span class="p">.</span><span class="nx">Base</span><span class="p">.</span><span class="nx">Monster</span><span class="p">)){</span>
+  <span class="k">if</span><span class="p">(</span><span class="nx">character</span> <span class="k">instanceof</span> <span class="nx">Monsters</span><span class="p">.</span><span class="nx">Base</span><span class="p">.</span><span class="nx">Monster</span><span class="p">){</span>
     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'I only eat heroes'</span><span class="p">);</span>
     <span class="k">return</span><span class="p">;</span>
   <span class="p">}</span>
   <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">att</span><span class="p">);</span>
   <span class="nx">character</span><span class="p">.</span><span class="nx">health</span> <span class="o">-=</span> <span class="nx">power</span><span class="p">;</span>
 <span class="p">}</span>
+
+<span class="nx">Monsters</span><span class="p">.</span><span class="nx">Base</span><span class="p">.</span><span class="nx">Monster</span><span class="p">.</span><span class="nx">overload</span><span class="p">(</span><span class="s1">'regenerate'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">message</span><span class="p">,</span> <span class="nx">health</span><span class="p">){</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">message</span><span class="p">);</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">regenerate</span><span class="p">(</span><span class="nx">health</span><span class="p">);</span>
+<span class="p">},</span> <span class="p">[</span><span class="nb">String</span><span class="p">,</span> <span class="nb">Number</span><span class="p">]);</span>
 
 <span class="c1">//Hero Base Class-------------------</span>
 <span class="nx">Monsters</span><span class="p">.</span><span class="nx">Base</span><span class="p">.</span><span class="nx">Hero</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="p">){</span>
@@ -769,6 +844,10 @@ Superclass's values.</li>
   <span class="k">this</span><span class="p">.</span><span class="kr">super</span><span class="p">(</span><span class="s1">'attack'</span><span class="p">,</span> <span class="p">[</span><span class="nx">character</span><span class="p">,</span> <span class="s1">'Chomp'</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">strength</span><span class="p">]);</span>
 <span class="p">}</span>
 
+<span class="nx">Monsters</span><span class="p">.</span><span class="nx">TheUndead</span><span class="p">.</span><span class="nx">Vampire</span><span class="p">.</span><span class="nx">overload</span><span class="p">(</span><span class="s1">'regenerate'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">regenerate</span><span class="p">(</span><span class="s1">'The blood is kicking in...'</span><span class="p">,</span> <span class="mi">20</span><span class="p">);</span>
+<span class="p">});</span>
+
 <span class="c1">//Vampire SubClass---------------------------------</span>
 <span class="nx">Monsters</span><span class="p">.</span><span class="nx">TheUndead</span><span class="p">.</span><span class="nx">NewBornVampire</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="p">){</span>
   <span class="k">this</span><span class="p">.</span><span class="kr">super</span><span class="p">([</span><span class="nx">name</span><span class="p">]);</span>
@@ -786,7 +865,7 @@ Superclass's values.</li>
 <span class="p">}.</span><span class="kr">extends</span><span class="p">(</span><span class="nx">Monsters</span><span class="p">.</span><span class="nx">Base</span><span class="p">.</span><span class="nx">Monster</span><span class="p">).</span><span class="kr">implements</span><span class="p">(</span><span class="nx">Monsters</span><span class="p">.</span><span class="nx">Interfaces</span><span class="p">.</span><span class="nx">TheUndead</span><span class="p">);</span>
 
 <span class="nx">Monsters</span><span class="p">.</span><span class="nx">TheUndead</span><span class="p">.</span><span class="nx">Zombie</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">attack</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">character</span><span class="p">){</span>
-  <span class="k">if</span><span class="p">(</span><span class="nx">character</span><span class="p">.</span><span class="nx">instanceOf</span><span class="p">(</span><span class="nx">Monsters</span><span class="p">.</span><span class="nx">Base</span><span class="p">.</span><span class="nx">Monster</span><span class="p">)){</span>
+  <span class="k">if</span><span class="p">(</span><span class="nx">character</span> <span class="k">instanceof</span> <span class="nx">Monsters</span><span class="p">.</span><span class="nx">Base</span><span class="p">.</span><span class="nx">Monster</span><span class="p">){</span>
     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"I don't care that you are a monster..."</span><span class="p">);</span>
   <span class="p">}</span>
   <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'Slurp'</span><span class="p">);</span>
@@ -814,6 +893,14 @@ Superclass's values.</li>
 <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'vamp: '</span> <span class="o">+</span> <span class="nx">vamp</span><span class="p">.</span><span class="nx">health</span><span class="p">);</span> <span class="c1">// vamp: 90</span>
 <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'zombie: '</span> <span class="o">+</span> <span class="nx">zombie</span><span class="p">.</span><span class="nx">health</span><span class="p">);</span> <span class="c1">// zombie: 100</span>
 
+<span class="nx">vamp</span><span class="p">.</span><span class="nx">regenerate</span><span class="p">();</span> <span class="c1">// The blood is kicking in...</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'vamp: '</span> <span class="o">+</span> <span class="nx">vamp</span><span class="p">.</span><span class="nx">health</span><span class="p">);</span> <span class="c1">// vamp: 110</span>
+
+<span class="nx">zombie</span><span class="p">.</span><span class="nx">regenerate</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'zombie: '</span> <span class="o">+</span> <span class="nx">zombie</span><span class="p">.</span><span class="nx">health</span><span class="p">);</span> <span class="c1">// zombie: 110</span>
+
+<span class="nx">zombie</span><span class="p">.</span><span class="nx">regenerate</span><span class="p">();</span> <span class="c1">// throws 'regenerate called with the wrong type of parameters.'</span>
+
 <span class="nx">zombie</span><span class="p">.</span><span class="nx">arm</span><span class="p">(</span><span class="s1">'evil'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">oldVal</span><span class="p">,</span> <span class="nx">newVal</span><span class="p">){</span>
   <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'oldval:'</span> <span class="o">+</span> <span class="nx">oldVal</span><span class="p">);</span> <span class="c1">// oldval: true</span>
   <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'newval:'</span> <span class="o">+</span> <span class="nx">newVal</span><span class="p">);</span> <span class="c1">// newval: false</span>
@@ -827,9 +914,9 @@ Superclass's values.</li>
 
 <span class="nx">zombie</span><span class="p">.</span><span class="nx">evil</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span> <span class="c1">//garth checking in...</span>
 
-<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">zombie</span><span class="p">.</span><span class="nx">instanceOf</span><span class="p">(</span><span class="nx">Monsters</span><span class="p">.</span><span class="nx">Base</span><span class="p">.</span><span class="nx">Monster</span><span class="p">));</span> <span class="c1">//false</span>
-<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">zombie</span><span class="p">.</span><span class="nx">instanceOf</span><span class="p">(</span><span class="nx">Monsters</span><span class="p">.</span><span class="nx">Base</span><span class="p">.</span><span class="nx">Hero</span><span class="p">));</span> <span class="c1">//true</span>
-<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">zombie</span><span class="p">.</span><span class="nx">instanceOf</span><span class="p">(</span><span class="nx">Monsters</span><span class="p">.</span><span class="nx">Base</span><span class="p">.</span><span class="nx">Character</span><span class="p">));</span> <span class="c1">//true</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">zombie</span> <span class="k">instanceof</span> <span class="nx">Monsters</span><span class="p">.</span><span class="nx">Base</span><span class="p">.</span><span class="nx">Monster</span><span class="p">);</span> <span class="c1">//false</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">zombie</span> <span class="k">instanceof</span> <span class="nx">Monsters</span><span class="p">.</span><span class="nx">Base</span><span class="p">.</span><span class="nx">Hero</span><span class="p">);</span> <span class="c1">//true</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">zombie</span> <span class="k">instanceof</span> <span class="nx">Monsters</span><span class="p">.</span><span class="nx">Base</span><span class="p">.</span><span class="nx">Character</span><span class="p">);</span> <span class="c1">//true</span>
 
 <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">zombie</span><span class="p">.</span><span class="nx">evil</span><span class="p">);</span> <span class="c1">// false</span>
 <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">zombie</span><span class="p">.</span><span class="nx">health</span><span class="p">);</span> <span class="c1">// 100</span>
