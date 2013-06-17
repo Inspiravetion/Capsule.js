@@ -43,17 +43,17 @@ API
 ---
 
 * [namespace](http://inspiravetion.github.io/Capsule.js#namespacenamespacestr)
-* extends
-* super
-* implements
-* overload
-* reactive
-* arm
-* disarm
-* clone
-* consume
-* projectOnto
-* hasProperty
+* [extends](http://inspiravetion.github.io/Capsule.js#extendssuperclass)
+* [super](http://inspiravetion.github.io/Capsule.js#superfuncname-argarray)
+* [implements](http://inspiravetion.github.io/Capsule.js#implementsinterfaceobj)
+* [overload](http://inspiravetion.github.io/Capsule.js#overloadfuncstr-implfunc-argtypearr)
+* [reactive](http://inspiravetion.github.io/Capsule.js#reactivepropstr-value-oldsingleton-newsingleton)
+* [arm](http://inspiravetion.github.io/Capsule.js#armpropstr-callback-context)
+* [disarm](http://inspiravetion.github.io/Capsule.js#disarmpropstr-callback-optcontext)
+* [clone](http://inspiravetion.github.io/Capsule.js#clone)
+* [consume](http://inspiravetion.github.io/Capsule.js#consumeother-mutator-global)
+* [projectOnto](http://inspiravetion.github.io/Capsule.js#projectontoother-options)
+* [hasProperty](http://inspiravetion.github.io/Capsule.js#haspropertyproperty)
 
 ###namespace(nameSpaceStr)
 Verifies that the given namespace exists in the global scope and if it doesn't, creates it. Allows you to logically
