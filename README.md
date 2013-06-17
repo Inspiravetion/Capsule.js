@@ -1,1 +1,1 @@
-[Capsule.js official page](inspiravetion.github.io/Capsule.js/)
+[Capsule.js official page](http://inspiravetion.github.io/Capsule.js/)
