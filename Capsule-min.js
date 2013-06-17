@@ -24,8 +24,8 @@ Object.defineProperty(this.prototype,property,{get:function(){if(void 0===this.v
 return this.val}.bind(t),set:function(t){if(typeof t!=e[this.p])throw"Error: attempting to set interface property "+this.p+" with incorrect type"
 this.val=t}.bind(t)})}return this},enumerable:!1}),Object.defineProperty(Function.prototype,"overload",{value:function(t,r,n){var o=this.prototype[t]||null
 this.prototype[t]=function(){for(var i=0,p=n?n.length:0;p>i;i++)if(p!=arguments.length||!(e(arguments[i],n[i])||arguments[i]instanceof n[i])&&arguments[i]){if(o)return o.apply(this,arguments)
-throw r.name+" called with the wrong type of parameters."}if(!(n&&0!=n.length||0==arguments.length||o))throw t+" called with the wrong type of parameters."
-r.apply(this,arguments)}},enumerable:!1}),Object.defineProperty(Object.prototype,"namespace",{value:function(e){var t,r,n
+throw t+" called with the wrong type of parameters."}if((!n||0==n.length)&&0!=arguments.length){if(o)return o.apply(this,arguments)
+throw t+" called with the wrong type of parameters."}return r.apply(this,arguments)}},enumerable:!1}),Object.defineProperty(Object.prototype,"namespace",{value:function(e){var t,r,n
 t=e.split("."),r=this
 for(var o=0;o<t.length;o++)n=t[o],r[n]=r[n]||{},r=r[n]},enumerable:!1}),Object.defineProperty(Object.prototype,"clone",{value:function(){var e={}
 if(this instanceof Number||this instanceof String||this instanceof Function||this instanceof Boolean)return this.valueOf()

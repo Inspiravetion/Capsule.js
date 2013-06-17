@@ -18,6 +18,10 @@ Monsters.Base.Character.prototype.greet = function(){
   }
 }
 
+Monsters.Base.Character.overload('regenerate', function(health){
+  this.health += health;
+}, [Number]);
+
 //Monster Base Class
 Monsters.Base.Monster = function(name){
   this.super([name, true])
@@ -36,6 +40,11 @@ Monsters.Base.Monster.prototype.attack = function(character, att, power){
   console.log(att);
   character.health -= power;
 }
+
+Monsters.Base.Monster.overload('regenerate', function(message, health){
+  console.log(message);
+  this.regenerate(health);
+}, [String, Number]);
 
 //Hero Base Class
 Monsters.Base.Hero = function(name){

@@ -12,6 +12,10 @@ Monsters.TheUndead.Vampire.prototype.attack = function(character){
   this.super('attack', [character, 'Chomp', this.strength]);
 }
 
+Monsters.TheUndead.Vampire.overload('regenerate', function(){
+  this.regenerate('The blood is kicking in...', 20);
+});
+
 //Vampire SubClass---------------------------------
 Monsters.TheUndead.NewBornVampire = function(name){
 	this.super([name]);

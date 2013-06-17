@@ -589,6 +589,10 @@ Monsters.Base.Character.prototype.greet = function(){
   console.log(this.name + ' checking in...');
 }
 
+Monsters.Base.Character.overload('regenerate', function(health){
+  this.health += health;
+}, [Number]);
+
 //Monster Base Class-------------------
 Monsters.Base.Monster = function(name){
   this.super([name, true])
@@ -607,6 +611,11 @@ Monsters.Base.Monster.prototype.attack = function(character, att, power){
   console.log(att);
   character.health -= power;
 }
+
+Monsters.Base.Monster.overload('regenerate', function(message, health){
+  console.log(message);
+  this.regenerate(health);
+}, [String, Number]);
 
 //Hero Base Class-------------------
 Monsters.Base.Hero = function(name){
@@ -650,6 +659,10 @@ Monsters.TheUndead.Vampire = function(name){
 Monsters.TheUndead.Vampire.prototype.attack = function(character){
   this.super('attack', [character, 'Chomp', this.strength]);
 }
+
+Monsters.TheUndead.Vampire.overload('regenerate', function(){
+  this.regenerate('The blood is kicking in...', 20);
+});
 
 //Vampire SubClass---------------------------------
 Monsters.TheUndead.NewBornVampire = function(name){
@@ -695,6 +708,14 @@ newBorn.attack(zombie); // I only eat heroes ***inherited from Vampire***
 console.log('human: ' + human.health); // human: 30
 console.log('vamp: ' + vamp.health); // vamp: 90
 console.log('zombie: ' + zombie.health); // zombie: 100
+
+vamp.regenerate(); // The blood is kicking in...
+console.log('vamp: ' + vamp.health); // vamp: 110
+
+zombie.regenerate(10);
+console.log('zombie: ' + zombie.health); // zombie: 110
+
+zombie.regenerate(); // throws 'regenerate called with the wrong type of parameters.'
 
 zombie.arm('evil', function(oldVal, newVal){
   console.log('oldval:' + oldVal); // oldval: true

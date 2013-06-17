@@ -21,4 +21,9 @@ Monster.prototype.attack = function(character, att, power){
   character.health -= power;
 }
 
+Monster.overload('regenerate', function(message, health){
+  console.log(message);
+  this.regenerate(health);
+}, [String, Number]);
+
 module.exports = Monster;

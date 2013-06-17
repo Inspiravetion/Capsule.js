@@ -16,4 +16,8 @@ Character.prototype.greet = function(){
   }
 }
 
+Character.overload('regenerate', function(health){
+  this.health += health;
+}, [Number]);
+
 module.exports = Character; //export class as module

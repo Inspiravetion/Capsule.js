@@ -11,4 +11,8 @@ Vampire.prototype.attack = function(character){
   this.super('attack', [character, 'Chomp', this.strength]);
 }
 
+Vampire.overload('regenerate', function(){
+	this.regenerate('The blood is kicking in...', 20);
+});
+
 module.exports = Vampire;
