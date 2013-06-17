@@ -14,6 +14,12 @@ corrupted. Along with the API bits that deal with inheritance and code reuse I a
 you can have handlers called whenever a specific property of an object is changed .Also did I mention it's less than 9kb un-minified and
 less than 5kb minified?
 
+Download
+--------
+
+* [minified](https://raw.github.com/Inspiravetion/Capsule.js/master/Capsule-min.js)
+* [un-minified](https://raw.github.com/Inspiravetion/Capsule.js/master/Capsule.js)
+
 Usage
 -----
 
@@ -35,6 +41,19 @@ require('./path/to/Capsule.js');
 
 API
 ---
+
+* [namespace](http://inspiravetion.github.io/Capsule.js#namespacenamespacestr)
+* extends
+* super
+* implements
+* overload
+* reactive
+* arm
+* disarm
+* clone
+* consume
+* projectOnto
+* hasProperty
 
 ###namespace(nameSpaceStr)
 Verifies that the given namespace exists in the global scope and if it doesn't, creates it. Allows you to logically
