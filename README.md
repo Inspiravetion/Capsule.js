@@ -544,10 +544,10 @@ Places all or a subset, depending on the options object, of an objects propertie
 ```
 * Parameters :
   * ```other``` : The other object to copy properties to
-  * ```options``` (optional): An object containing up to two functions (```filter``` and ```mutator``). The filter function will be called with the value
+  * ```options``` (optional): An object containing up to two functions (```filter``` and ```mutator```). The filter function will be called with the value
 of each property and should return true for all properties that should be projected onto ```other```. The mutator function will be
 passed the value of all the properties that have passed the filter test, it should return the value to be set on ```other``` for the 
-property being considered. If filter is ommitted all properties will be copied. If mutator is ommitted, values will not be changed
+property being considered. If ```filter``` is ommitted all properties will be copied. If ```mutator``` is ommitted, values will not be changed
 before they are set.
 * Caveats : 
   * By default, this function does not place the properties onto the prototype of the given object. If you want to alter
